@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DeveloperToolsToolWindowSettingsV1" lastSelectedContentNodeId="date-time-converter" pluginVersion="7.1.0">
+    <developerToolsConfigurations>
+      <developerToolConfiguration developerToolId="regular-expression-matcher" id="1afbd460-6ef6-4946-912d-224fdd476498" name="Workbench">
+        <properties>
+          <property key="inputText" type="INPUT" value="kotlin.String|20200610" />
+          <property key="regexText" type="INPUT" value="kotlin.String|(?P&lt;year&gt;\d{4})(?P&lt;month&gt;\d{2})(?P&lt;day&gt;\d{2})" />
+        </properties>
+      </developerToolConfiguration>
+    </developerToolsConfigurations>
+    <expandedGroupNodeIds />
+  </component>
+</project>

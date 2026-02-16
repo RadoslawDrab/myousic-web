@@ -1,0 +1,15 @@
+export function formatTitle(title: string) {
+    return title ? `${title} | ${import.meta.env.VITE_APP_NAME}` : import.meta.env.VITE_APP_NAME
+}
+
+export function pascalCase(text: string | string[]) {
+    return (Array.isArray(text) ? text : text.split(' '))
+               .map(word => word.trim())
+               .filter(word => word)
+               .map(word => word[0].toUpperCase() + word.slice(1).toLowerCase())
+               .join('')
+}
+
+export function joinClass(...classes: string[]) {
+    return classes.filter(v => v).join(' ')
+}

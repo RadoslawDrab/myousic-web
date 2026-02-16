@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictBindCallApply": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@public/*": ["./public/*"],
+    }
+  },
+  "include": [
+    "./src/**/*.ts",
+    "./.config/*.d.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}
