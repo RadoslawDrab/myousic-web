@@ -17,7 +17,7 @@ const useApi = () => {
             if (query[key]) return
             query[key] = value
         })
-        return await get(null, { query, baseUrl: import.meta.env.VITE_SEARCH_API_URL })
+        return await get(null, { query, baseUrl: 'https://itunes.apple.com/search' })
     }
 
     type ExtraOptions = {

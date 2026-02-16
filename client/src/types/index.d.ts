@@ -16,7 +16,6 @@ declare global {
     }>
 
     export type LyricsProvider = 'AzLyrics' | 'Genius'
-    export type UrlModifier = Record<'artist' | 'title', Record<string, string>>
     export type Settings = {
         lyricsProviders: LyricsProvider[]
         artworkSize: number
@@ -24,7 +23,4 @@ declare global {
         includedGenres: string[]
         excludedGenres: string[]
     }
-
-    export type LyricsProviderGetter = (provider: LyricsProvider, track: SearchAPI_TrackResult | CustomTrack) => Promise<string | null>
-    export type GenresProviderGetter = (provider: GenresProvider, track: SearchAPI_TrackResult | CustomTrack) => Promise<string[]>
 }
