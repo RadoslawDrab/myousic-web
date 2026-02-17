@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { diffJson } from 'diff'
 import useStatus from '@/composables/use-status'
 import { useClipboard } from '@vueuse/core'
 
@@ -9,6 +10,8 @@ interface Props extends /* @vue-ignore */ Partial<VCard['$props']> {
   paste?: boolean
   cardTitle?: string
   contentClass?: string
+  showDiff?: boolean
+  maxContentHeight?: string | number
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -18,6 +21,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const item = defineModel<any>()
+const prevItem = defineModel<any>('previous')
+
 const cb = useClipboard()
 const status = useStatus()
 
@@ -30,16 +35,29 @@ async function pasteJson() {
     item.value = JSON.parse(cb.text.value)
     status.add({ title: 'Pasted from clipboard', type: 'success' })
   } catch (e) {
+    console.error(e)
     status.add({ title: 'Failed to parse JSON', type: 'error' })
   }
 }
+
+const heightStyle = computed(() => {
+  if (!props.maxContentHeight) return 'auto'
+  return typeof props.maxContentHeight === 'number' ? `calc(2rem * ${Math.max(props.maxContentHeight, 1)})` : props.maxContentHeight
+})
 </script>
 
 <template>
   <v-card flat v-bind="props">
     <v-card-text :class="props.contentClass">
-      <span class="text-h6">{{ props.cardTitle }}</span>
-      <pre class="rounded pa-4 overflow-x-auto bg-black text-white">{{ JSON.stringify(item, null, 2) }}</pre>
+      <span v-if="props.cardTitle" class="d-block text-h6">{{ props.cardTitle }}</span>
+      <pre v-if="!props.showDiff || !prevItem" class="rounded pa-4 overflow-auto bg-black text-white" :style="{ maxHeight: heightStyle, minHeight: '2em' }">{{ JSON.stringify(item || {}, null, 2) }}</pre>
+      <div v-else class="rounded pa-4 overflow-auto bg-black text-white" :style="{ height: heightStyle }">
+        <template v-for="part in diffJson(prevItem, item)">
+          <pre v-if="part.added" class="text-green">{{ part.value }}</pre>
+          <pre v-else-if="part.removed" class="text-red">{{ part.value }}</pre>
+          <pre v-else>{{ part.value }}</pre>
+        </template>
+      </div>
     </v-card-text>
     <v-card-actions v-if="props.copy || props.paste || $slots.appendActions || $slots.prependActions">
       <slot name="prependActions">
