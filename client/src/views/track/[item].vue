@@ -10,7 +10,7 @@ import { pascalCase } from '@/utils/string'
 const route = useRoute()
 const router = useRouter()
 const { downloadTrack, getTrackData, renderComment, isLoading } = useApi()
-const sessionData = useData<SearchAPI_TrackResult>()
+const { session, local } = useData()
 
 
 const props = withDefaults(defineProps<{
@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<{
   jsonKeys: () => ['artistName', 'collectionName', 'collectionCensoredName', 'trackName', 'trackCensoredName', 'primaryGenreName', 'trackExplicitness', 'collectionExplicitness', 'trackNumber', 'trackCount', 'discNumber', 'discCount', 'trackTimeMillis', 'releaseDate', 'artworkUrl100']
 })
 
-const item = computed<(SearchAPI_TrackResult & ExtendedTrack) | null>(() => (sessionData.value.items || []).find(track => track.trackId == route.params.item) || null)
+const item = computed<(SearchAPI_TrackResult & ExtendedTrack) | null>(() => ((session.value.items || []) as SearchAPI_TrackResult[]).find(track => track.trackId == route.params.item) || null)
 
 const jsonDialog = ref<boolean>(false)
 const censored = ref<boolean>(true)
@@ -67,13 +67,11 @@ const itemGenres = computed({
 })
 
 async function _getTrackData() {
-  const data = await getTrackData(item.value, sessionData.value.settings)
+  const data = await getTrackData(item.value, local.value)
   item.value.genres = data.genres
   item.value.lyrics = data.lyrics
   lyricsUrl.value = data.lyricsUrl
   genresUrl.value = data.genresUrl
-  // !item.value.genres && (item.value.genres = data.genres)
-  // !item.value.lyrics && (item.value.lyrics = data.lyrics)
 
 }
 
@@ -88,10 +86,10 @@ onMounted(async () => {
 </script>
 
 <template>
+  <UrlDataSearch class="mb-3 flex-grow-1" />
   <v-card v-if="item" flat :loading="isLoading" :disabled="isLoading">
     <v-card-title class="border-b mb-3 d-flex align-center justify-space-between ga-2">
       <Flex :gap="2">
-        <v-btn v-tooltip="'Back'" class="pa-1" icon="mdi-arrow-left" to="/" rounded="sm" flat></v-btn>
         <v-btn v-tooltip="'Refresh'" class="pa-1" icon="mdi-restore" rounded="sm" flat @click="_getTrackData()"></v-btn>
       </Flex>
       {{ item.artistName }} - {{ item.trackName }}
@@ -166,7 +164,7 @@ onMounted(async () => {
                   persistent-placeholder
                   auto-grow
               ></v-textarea>
-              <div v-if="item.comment" class="border pa-2 text-gray-200" v-html="renderComment(sessionData.url, item, {}, true)"></div>
+              <div v-if="item.comment" class="border pa-2 text-gray-200" v-html="renderComment(session.url, item, {}, true)"></div>
             </td>
           </tr>
         </tbody>
@@ -177,7 +175,7 @@ onMounted(async () => {
         {{ censored ? 'Censored' : 'Uncensored' }}
       </v-btn>
       <v-btn prepend-icon="mdi-play" flat target="_blank" :href="item.previewUrl">Preview</v-btn>
-      <v-btn prepend-icon="mdi-download" :disabled="!sessionData.url" flat @click="downloadTrack(sessionData.url, item)">
+      <v-btn prepend-icon="mdi-download" :disabled="!session.url" flat @click="downloadTrack(session.url, item)">
         Download
       </v-btn>
       <v-btn prepend-icon="mdi-code-json" flat @click="jsonDialog = true">View JSON</v-btn>

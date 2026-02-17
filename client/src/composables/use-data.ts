@@ -1,27 +1,21 @@
 import { useStorage } from '@vueuse/core'
 
-export interface SessionData<Item = SearchAPI_Result> {
-    items?: Item[]
+export interface SessionData {
+    items?: SearchAPI_Result[]
     url?: string
     search?: string
     entity?: SearchAPI_Entity
     result?: API_SearchUrlResult
-    settings?: Settings
+}
+export interface LocalData extends Settings {
 }
 
-const useData = <Item = SearchAPI_Result>(defaultData?: SessionData<Item>) => {
-	return useStorage<SessionData<Item>>(
+const useData = () => {
+	const session = useStorage<SessionData>(
         import.meta.env.VITE_APP_NAME.toUpperCase() + '_DATA',
         {
             items: [],
             entity: 'song',
-            settings: {
-                lyricsProviders: ['AzLyrics', 'Genius'],
-                artworkSize: 500,
-                includedGenres: [],
-                excludedGenres: [],
-                lyricsModifier: {},
-            },
         },
         sessionStorage,
         {
@@ -32,6 +26,27 @@ const useData = <Item = SearchAPI_Result>(defaultData?: SessionData<Item>) => {
             }
         }
     )
+
+    const local = useStorage<LocalData>(
+        import.meta.env.VITE_APP_NAME.toUpperCase() + '_SETTINGS',
+        {
+            lyricsProviders: ['AzLyrics', 'Genius'],
+            artworkSize: 500,
+            includedGenres: [],
+            excludedGenres: [],
+            lyricsModifier: {},
+            defaultComment: '[URL: {{ url }}]'
+        },
+        localStorage,
+        {
+            mergeDefaults: true,
+            serializer: {
+                read: (value) => JSON.parse(value),
+                write: (value) => JSON.stringify(value)
+            }
+        })
+
+    return { session, local }
 }
 
 export default useData

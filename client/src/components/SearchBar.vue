@@ -11,10 +11,10 @@
   })
 
   const title = useTitle()
-  const sessionData = useData()
-  const search = useDebounce(sessionData, 1500, { targetKey: 'search' })
+  const { session } = useData()
+  const search = useDebounce(session, 1500, { targetKey: 'search' })
 
-  watch(() => sessionData.value.search, (search) => {
+  watch(() => session.value.search, (search) => {
     title.value = formatTitle(search)
   }, { immediate: true })
 
@@ -32,7 +32,7 @@
     >
     </v-text-field>
     <v-select
-        v-model="sessionData.entity"
+        v-model="session.entity"
         :items="[
           { title: 'Track', value: 'song' },
           { title: 'Artist', value: 'musicArtist' },

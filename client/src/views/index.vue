@@ -6,16 +6,16 @@ import useStatus from '@/composables/use-status'
 const { searchApi, downloadTrack, isLoading } = useApi()
 const status = useStatus()
 
-const sessionData = useData()
+const { session } = useData()
 
-const items = ref<SearchAPI_Result[]>(sessionData.value.items || [])
+const items = ref<SearchAPI_Result[]>(session.value.items || [])
 
 const headerFilter = useTemplateRef('headerFilter')
 const allHeaders = ref<DataTableHeader[]>([])
 const headers = ref(allHeaders.value)
 
 const urlKeys = computed<[keyof SearchAPI_Result, keyof SearchAPI_Result][]>(() => {
-  switch (sessionData.value.entity) {
+  switch (session.value.entity) {
     case 'album':
       return [
         ['collectionName', 'collectionViewUrl'],
@@ -40,7 +40,7 @@ const urlKeys = computed<[keyof SearchAPI_Result, keyof SearchAPI_Result][]>(() 
 
 const explicitKeys: (keyof SearchAPI_Result)[] = ['collectionExplicitness', 'trackExplicitness']
 
-watch([() => sessionData.value.search, () => sessionData.value.entity], async ([search, entity]) => {
+watch([() => session.value.search, () => session.value.entity], async ([search, entity]) => {
   if (!search) {
     items.value = []
     return
@@ -57,7 +57,7 @@ watch([() => sessionData.value.search, () => sessionData.value.entity], async ([
 
 })
 
-watch(() => sessionData.value.entity, (entity) => {
+watch(() => session.value.entity, (entity) => {
   let headers: DataTableHeader[] = []
   const albumHeaders: DataTableHeader[] = [
     { title: 'Album Name', key: 'collectionName' },
@@ -100,11 +100,12 @@ watch(() => sessionData.value.entity, (entity) => {
 }, { immediate: true })
 
 watch(items, (items) => {
-  sessionData.value.items = items
+  session.value.items = items
 }, { deep: true, immediate: true })
 </script>
 
 <template>
+  <UrlDataSearch class="mb-3 flex-grow-1" />
   <SearchBar>
     <HeadersFilter ref="headerFilter" v-model="headers" v-model:all-headers="allHeaders"  />
   </SearchBar>
@@ -116,7 +117,7 @@ watch(items, (items) => {
   >
     <template #item.actions="{ item }">
       <v-btn-group density="compact">
-        <v-btn icon="mdi-download" :disabled="!sessionData.url" flat @click="downloadTrack(sessionData.url, item)"></v-btn>
+        <v-btn icon="mdi-download" :disabled="!session.url" flat @click="downloadTrack(session.url, item)"></v-btn>
         <v-btn icon="mdi-eye" flat :to="`/${item.wrapperType}/${item.trackId || item.collectionId || item.artistId}`"></v-btn>
       </v-btn-group>
     </template>
