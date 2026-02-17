@@ -6,7 +6,7 @@
 
 
   const props = defineProps<{
-    class?: string
+    formClass?: string
   }>()
 
   const { get, isLoading } = useFetch({ })
@@ -43,7 +43,7 @@
     <p v-if="sessionData.result" class="text-sm-body-2 text-grey-darken-1 mb-1">{{ sessionData.result.fullTitle }}</p>
     <v-form
         class="d-flex align-center ga-2"
-        :class="props.class"
+        :class="props.formClass"
         :disabled="isLoading"
         @submit.prevent="onSubmit"
     >

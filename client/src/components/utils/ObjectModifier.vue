@@ -57,7 +57,7 @@ async function save(event: SubmitEventPromise) {
 
 <template>
   <v-form @submit.prevent="save" validate-on="blur lazy">
-    <v-list class="py-0" density="compact">
+    <v-list class="py-0 bg-transparent" density="compact">
       <v-list-item v-for="(_, index) in items" class="py-3" :class="joinClass(index > 0 && 'border-t pt-3')" :key="index">
         <Flex :gap="2">
           <v-btn

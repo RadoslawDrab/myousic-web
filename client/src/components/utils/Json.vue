@@ -8,6 +8,7 @@ interface Props extends /* @vue-ignore */ Partial<VCard['$props']> {
   copy?: boolean
   paste?: boolean
   cardTitle?: string
+  contentClass?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -36,7 +37,7 @@ async function pasteJson() {
 
 <template>
   <v-card flat v-bind="props">
-    <v-card-text>
+    <v-card-text :class="props.contentClass">
       <span class="text-h6">{{ props.cardTitle }}</span>
       <pre class="rounded pa-4 overflow-x-auto bg-black text-white">{{ JSON.stringify(item, null, 2) }}</pre>
     </v-card-text>

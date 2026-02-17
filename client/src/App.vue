@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import useData from '@/composables/use-data'
-
 const route = useRoute()
 
-const isDocsRoute = computed(() => route.path.startsWith('/docs'))
 const lastPath = ref<string>('/')
+const isDocsRoute = computed(() => route.path.startsWith('/docs'))
+
+const name = computed(() => import.meta.env.VITE_APP_NAME)
+
+const breadcrumbs = computed<string[]>(() => {
+  return route.matched.filter(v => v.meta.breadcrumbs || v.name).map(v => (v.meta.breadcrumbs || v.name) as string)
+})
 
 watch(() => route.path, (path) => {
   if (isDocsRoute.value) return
@@ -18,10 +22,26 @@ watch(() => route.path, (path) => {
     <v-theme-provider>
       <v-layout>
         <v-main class="mx-auto pa-4 w-100" :style="{ 'max-width': '1000px' }">
-          <UrlDataSearch v-if="!isDocsRoute" class="mb-3" />
+          <Flex class="mb-3 border-b" :gap="2" align="center" justify="space-between">
+            <Flex align="center" :gap="2">
+              <v-btn
+                  class="text-none"
+                  prepend-icon="mdi-home"
+                  to="/"
+                  variant="plain"
+                  rounded="sm"
+                  flat
+                  active-color="primary"
+              >
+                {{ name }}
+              </v-btn>
+              <v-divider vertical />
+              <v-btn class="text-none" to="/settings" prepend-icon="mdi-cog" variant="plain" flat active-color="primary">Settings</v-btn>
+              <v-btn class="text-none" to="/docs" prepend-icon="mdi-file-document" variant="plain" flat active-color="primary">Docs</v-btn>
+            </Flex>
+            <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
+          </Flex>
           <RouterView />
-          <SettingsDial />
-          <v-fab :to="!isDocsRoute ? '/docs' : lastPath" app location="bottom left" icon="mdi-file-document" v-tooltip="'Docs'"></v-fab>
           <StatusHandler />
         </v-main>
       </v-layout>
