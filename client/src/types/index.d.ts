@@ -22,5 +22,6 @@ declare global {
         lyricsModifier: Record<string, string>
         includedGenres: string[]
         excludedGenres: string[]
+        defaultComment: string
     }
 }

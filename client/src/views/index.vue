@@ -102,6 +102,12 @@ watch(() => session.value.entity, (entity) => {
 watch(items, (items) => {
   session.value.items = items
 }, { deep: true, immediate: true })
+
+definePage({
+  meta: {
+    breadcrumbs: 'Home'
+  }
+})
 </script>
 
 <template>

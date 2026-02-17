@@ -80,8 +80,17 @@ onMounted(async () => {
     await router.replace('/')
     return
   }
-  // if (item.value.genres)
-  await _getTrackData()
+  if (import.meta.env.PROD) await _getTrackData()
+
+  if (!item.value.comment) {
+    item.value.comment = local.value.defaultComment
+  }
+})
+
+definePage({
+  meta: {
+    breadcrumbs: 'Track'
+  }
 })
 </script>
 
@@ -159,8 +168,7 @@ onMounted(async () => {
                   v-model="itemComment"
                   variant="solo-filled"
                   :rows="2"
-                  hint="Testing"
-                  placeholder="E.g. [URL: $url$]"
+                  placeholder="E.g. [URL: {{ url }}]"
                   persistent-placeholder
                   auto-grow
               ></v-textarea>
