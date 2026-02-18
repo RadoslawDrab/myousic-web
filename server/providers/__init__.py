@@ -23,3 +23,11 @@ def map_provider(name: LyricsProvider | str, default: Provider | None = None):
 		case 'Genius':
 			return Genius()
 	return default
+
+def find_lyrics_provider(providers: list[str], artist: str, title: str, modifiers: dict[str, str] = None):
+	for provider in providers:
+		lyrics = map_provider(provider)
+		if modifiers is not None: lyrics.modifiers = modifiers
+		if lyrics.get(artist, title)[0] is not None:
+			return lyrics
+	return None
