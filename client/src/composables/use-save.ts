@@ -1,5 +1,5 @@
-function useSave<T extends object>(targetRef: Ref<T>, key: keyof T): { draft: Ref<T[keyof T]>, save: () => void, reset: () => void }
-function useSave<T>(targetRef: Ref<T>): { draft: Ref<T>, save: () => void, reset: () => void }
+function useSave<T extends object>(targetRef: Ref<T>, key: keyof T): { draft: Ref<T[keyof T]>, isChanged: Ref<boolean>, save: () => void, reset: () => void }
+function useSave<T>(targetRef: Ref<T>): { draft: Ref<T>, isChanged: Ref<boolean>, save: () => void, reset: () => void }
 function useSave<T>(targetRef: Ref<T>, key?: keyof T) {
     const getValue = () => {
         const val = targetRef.value

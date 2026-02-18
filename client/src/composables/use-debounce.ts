@@ -1,4 +1,4 @@
-export function useDebounce<T extends Record<string, any>>(targetRef: Ref<string | T>, delay: number = 1500, options: { immediate?: boolean, targetKey?: keyof T  }) {
+export function useDebounce<T extends Record<string, any>>(targetRef: Ref<string | T>, delay: number = 1500, options?: { immediate?: boolean, targetKey?: keyof T  }) {
     const getValue = (value: string | T) => typeof value === 'string' ? value : (options.targetKey ? value[options.targetKey] : '')
 
     const localValue = ref<string>(getValue(targetRef.value))
