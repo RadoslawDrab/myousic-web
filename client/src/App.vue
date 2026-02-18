@@ -15,15 +15,16 @@ watch(() => route.path, (path) => {
 
   lastPath.value = path
 }, { immediate: true })
+
 </script>
 
 <template>
   <v-app theme="dark">
     <v-theme-provider>
       <v-layout>
-        <v-main class="mx-auto pa-2 pa-sm-4 w-100" :style="{ 'max-width': '1100px' }">
-          <Flex class="mb-3 border-b" :gap="2" align="center" justify="space-between">
-            <Flex align="center" :gap="2">
+        <v-main class="mx-auto pa-2 px-sm-4 w-100" :style="{ 'max-width': '1100px' }">
+          <Flex class="mb-3 border-b flex-wrap" :gap="2" align="center" justify="space-between">
+            <Flex class="flex-wrap align-start align-sm-center" :gap="2">
               <v-btn
                   class="text-none"
                   prepend-icon="mdi-home"
@@ -35,7 +36,6 @@ watch(() => route.path, (path) => {
               >
                 {{ name }}
               </v-btn>
-              <v-divider vertical />
               <v-btn class="text-none" to="/settings" prepend-icon="mdi-cog" variant="plain" flat active-color="primary">Settings</v-btn>
               <v-btn class="text-none" to="/docs" prepend-icon="mdi-file-document" variant="plain" flat active-color="primary">Docs</v-btn>
             </Flex>

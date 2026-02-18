@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import useApi from '@/composables/use-api'
 import useData from '@/composables/use-data'
-import useStatus from '@/composables/use-status'
 import { getTime } from '@/utils'
 
 const { searchApi, downloadTrack, getTrackData, renderComment, isLoading } = useApi()
-const status = useStatus()
 
 const { session } = useData()
 
@@ -58,12 +56,6 @@ watch([() => session.value.search, () => session.value.entity], async ([search, 
 
   const { results } = await searchApi({ term: search, entity: entity as SearchAPI_Entity })
   items.value = results
-
-  status.add({
-    title: 'Found',
-    type: 'success'
-  })
-
 })
 
 watch(() => session.value.entity, (entity) => {

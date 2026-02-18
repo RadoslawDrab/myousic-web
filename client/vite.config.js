@@ -33,6 +33,11 @@ export default defineConfig(({ mode }) => {
             dts: './.config/typed-router.d.ts'
         }),
         Markdown({
+            headEnabled: true,
+            exposeFrontmatter: true,
+            extendFrontmatter(frontmatter) {
+                return { ...frontmatter }
+            }
         }),
         vue({
             include: [/\.vue$/, /\.md$/]

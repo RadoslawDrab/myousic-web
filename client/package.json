@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@unhead/vue": "^2.1.4",
     "@vueuse/core": "^14.2.0",
     "@vueuse/router": "^14.2.0",
     "uuid": "^13.0.0",
@@ -20,6 +21,7 @@
   "devDependencies": {
     "@mdi/font": "^7.4.47",
     "@vitejs/plugin-vue": "^6.0.3",
+    "sass": "^1.97.3",
     "typescript": "^5.9.3",
     "unplugin-auto-import": "^21.0.0",
     "unplugin-vue-components": "^31.0.0",
