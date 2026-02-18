@@ -1,3 +1,4 @@
+import useData from '@/composables/use-data'
 import useFetch from '@/composables/use-fetch'
 import { TRACK_KEYS } from '@/utils/api'
 import { download } from '@/utils'
@@ -6,6 +7,7 @@ import Mustache from 'mustache'
 
 const useApi = () => {
     const { isLoading, status, get, post } = useFetch()
+    const { local } = useData()
 
     async function searchApi(options: SearchAPI_Options): Promise<{ resultCount: number, results: (SearchAPI_TrackResult & SearchAPI_ArtistResult & SearchAPI_AlbumResult)[] }> {
         const query = {}
@@ -35,6 +37,12 @@ const useApi = () => {
         const { fileName, downloadUrl } = await post<{ fileName: string, downloadUrl: string }>({
             url,
             track: { ..._track, comment: renderComment(url, track, options) }
+        }, {
+            baseUrl: import.meta.env.VITE_API_URL,
+            path: [],
+            query: {
+                artworkSize: local.value.artworkSize
+            }
         })
 
         download(fileName, downloadUrl)
@@ -42,7 +50,9 @@ const useApi = () => {
     function renderComment(url: string, track: SearchAPI_TrackResult | ExtendedTrack, options?: ExtraOptions, renderError: boolean = false): string {
         const _track = { ...track, ...(options || {})}
 
-        if (!_track.comment) return ''
+        if (!_track.comment) {
+            _track.comment = local.value.defaultComment
+        }
 
         const variables = {
             url,
@@ -51,8 +61,9 @@ const useApi = () => {
                 return (_track.genres || []).map(v => pascalCase(v))
             }
         }
+
         try {
-            return Mustache.render(_track.comment || '', variables)
+            return Mustache.render(_track.comment || '', variables, {}, { escape: (text) => text })
         } catch (e) {
             if (renderError) return e
             else console.error(e)
@@ -60,7 +71,7 @@ const useApi = () => {
         return ''
     }
 
-    async function getTrackData(track: SearchAPI_TrackResult | ExtendedTrack, settings?: Settings) {
+    async function getTrackData(track: SearchAPI_TrackResult | ExtendedTrack) {
         return await get<{
             genres: string[]
             genresUrl: string
@@ -68,12 +79,11 @@ const useApi = () => {
             lyricsUrl: string
         }>(null, {
             path: [track.artistName, track.trackName],
-            query: settings ? {
-                lyrics: settings.lyricsProviders,
-                lyricsModifier: Object.entries(settings.lyricsModifier).map(([key, value]) => `${key}:${value}`),
-                // lyricsModifier: Object.entries(settings.lyricsModifier).reduce((acc, [key, value], index) => acc += `${index > 0 ? ',' : ''}${key}:${value}`, ''),
-                excludedGenres: settings.excludedGenres,
-                includedGenres: settings.includedGenres
+            query: local.value ? {
+                lyrics: local.value.lyricsProviders,
+                lyricsModifier: Object.entries(local.value.lyricsModifier).map(([key, value]) => `${key}:${value}`),
+                excludedGenres: local.value.excludedGenres,
+                includedGenres: local.value.includedGenres
             } : {}
         })
     }

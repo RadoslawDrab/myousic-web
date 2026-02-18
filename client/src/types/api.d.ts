@@ -93,7 +93,9 @@ declare global {
     export type ExtendedTrack = CustomTrack & {
         comment?: string
         genres?: string[]
+        genresUrl?: string
         lyrics?: string
+        lyricsUrl?: string
     }
 
     export type API_Response = {

@@ -25,8 +25,6 @@ const item = computed<(SearchAPI_TrackResult & ExtendedTrack) | null>(() => ((se
 const jsonDialog = ref<boolean>(false)
 const censored = ref<boolean>(true)
 const stripJson = ref<boolean>(true)
-const lyricsUrl = ref<string>('')
-const genresUrl = ref<string>('')
 
 const itemComment = useDebounce(item, 1500, { targetKey: 'comment' })
 
@@ -58,22 +56,12 @@ const formattedItem = computed(() => {
   return obj
 })
 
-const itemGenres = computed({
-  get() {
-    return (item.value?.genres || [])
-  },
-  set(value) {
-    item.value.genres = value.map(v => pascalCase(v))
-  }
-})
-
 async function _getTrackData() {
-  const data = await getTrackData(item.value, local.value)
+  const data = await getTrackData(item.value)
   item.value.genres = data.genres
   item.value.lyrics = data.lyrics
-  lyricsUrl.value = data.lyricsUrl
-  genresUrl.value = data.genresUrl
-
+  item.value.lyricsUrl = data.lyricsUrl
+  item.value.genresUrl = data.genresUrl
 }
 
 onMounted(async () => {
@@ -96,13 +84,14 @@ definePage({
 </script>
 
 <template>
-  <UrlDataSearch class="mb-3 flex-grow-1" />
   <v-card v-if="item" flat :loading="isLoading" :disabled="isLoading">
     <v-card-title class="border-b mb-3 d-flex align-center justify-space-between ga-2">
       <Flex :gap="2">
-        <v-btn v-tooltip="'Refresh'" class="pa-1" icon="mdi-restore" rounded="sm" flat @click="_getTrackData()"></v-btn>
+        <v-btn v-tooltip="'Get track data'" class="pa-1" icon="mdi-download" rounded="sm" flat @click="_getTrackData()"></v-btn>
       </Flex>
-      {{ item.artistName }} - {{ item.trackName }}
+      <v-btn class="text-none text-h6" :href="session.url" target="_blank" variant="plain" flat>
+        {{ item.artistName }} - {{ item.trackName }}
+      </v-btn>
     </v-card-title>
     <v-card-text class="d-flex align-start ga-3">
       <ArtworkImage :small-render-size="500" :large-render-size="1000" :url="item.artworkUrl100" />
@@ -125,7 +114,8 @@ definePage({
           </tr>
           <tr>
             <td>
-              <v-btn class="px-0 text-none" :href="genresUrl" variant="plain" target="_blank" flat>Genres</v-btn>
+              <v-btn v-if="item.genresUrl" class="px-0 text-none" :href="item.genresUrl" variant="plain" target="_blank" flat>Genres</v-btn>
+              <template v-else>Genres</template>
             </td>
             <td class="py-2">
               <v-combobox v-model:model-value="item.genres" :items="item.genres" chips multiple>
@@ -141,7 +131,8 @@ definePage({
           </tr>
           <tr>
             <td>
-              <v-btn class="px-0 text-none" :href="lyricsUrl" variant="plain" target="_blank" flat>Lyrics</v-btn>
+              <v-btn v-if="item.lyricsUrl" class="px-0 text-none" :href="item.lyricsUrl" variant="plain" target="_blank" flat>Lyrics</v-btn>
+              <template v-else>Lyrics</template>
             </td>
             <td class="py-2">
               <v-textarea
