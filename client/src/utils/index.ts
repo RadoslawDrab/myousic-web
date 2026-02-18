@@ -6,3 +6,9 @@ export function download(fileName: string, blob_or_url: string | Blob) {
     link.click()
     URL.revokeObjectURL(link.href)
 }
+
+export function getTime(time: number) {
+    const date = new Date(time)
+
+    return date.getMinutes().toString().padStart(2, '0') + ':' + date.getSeconds().toString().padStart(2, '0')
+}

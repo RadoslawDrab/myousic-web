@@ -4,6 +4,7 @@ import ExplicitnessIcon from '@/components/ExplicitnessIcon.vue'
 import useApi from '@/composables/use-api'
 import useData from '@/composables/use-data'
 import { useDebounce } from '@/composables/use-debounce'
+import { getTime } from '@/utils'
 import { getArtworkUrl } from '@/utils/api'
 import { pascalCase } from '@/utils/string'
 
@@ -39,7 +40,7 @@ const rows = computed<{ property: string, value: any, link?: string, component?:
     { property: 'Collection Explicitness', value: item.value?.collectionExplicitness, component: ExplicitnessIcon, componentProps: { value: item.value.collectionExplicitness } },
     { property: 'Track Number', value: `${item.value?.trackNumber} / ${item.value?.trackCount}`},
     { property: 'Disc Number', value: `${item.value?.discNumber} / ${item.value?.discCount}`},
-    { property: 'Track Time', value: new Date(item.value?.trackTimeMillis).toLocaleTimeString() },
+    { property: 'Track Time', value: getTime(item.value?.trackTimeMillis || 0) },
     { property: 'Release Date', value: new Date(item.value?.releaseDate).toLocaleDateString() },
 
   ] : []

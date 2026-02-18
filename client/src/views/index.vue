@@ -2,6 +2,7 @@
 import useApi from '@/composables/use-api'
 import useData from '@/composables/use-data'
 import useStatus from '@/composables/use-status'
+import { getTime } from '@/utils'
 
 const { searchApi, downloadTrack, isLoading } = useApi()
 const status = useStatus()
@@ -141,8 +142,9 @@ definePage({
     </template>
     <template #item.artworkUrl100="{ value }">
       <ArtworkImage :url="value" />
-<!--      <v-img v-if="value" :src="getArtworkUrl(value, 500)"></v-img>-->
-<!--      <v-icon v-else icon="mdi-music-note"></v-icon>-->
+    </template>
+    <template #item.trackTimeMillis="{ value }">
+      {{ getTime(value) }}
     </template>
     <template #item.trackData="{ item }">
       {{ item.trackNumber }} / {{ item.trackCount }}
