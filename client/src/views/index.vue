@@ -4,7 +4,7 @@ import useData from '@/composables/use-data'
 import useStatus from '@/composables/use-status'
 import { getTime } from '@/utils'
 
-const { searchApi, downloadTrack, isLoading } = useApi()
+const { searchApi, downloadTrack, getTrackData, renderComment, isLoading } = useApi()
 const status = useStatus()
 
 const { session } = useData()
@@ -41,12 +41,20 @@ const urlKeys = computed<[keyof SearchAPI_Result, keyof SearchAPI_Result][]>(() 
 
 const explicitKeys: (keyof SearchAPI_Result)[] = ['collectionExplicitness', 'trackExplicitness']
 
+async function onDownload(item: SearchAPI_Result) {
+  const _item: ExtendedTrack = { ...item }
+  const {lyrics, genres} = await getTrackData(item)
+  _item.lyrics = lyrics
+  _item.comment = renderComment(session.value.url, item, { genres, lyrics })
+
+  await downloadTrack(session.value.url, _item)
+}
+
 watch([() => session.value.search, () => session.value.entity], async ([search, entity]) => {
   if (!search) {
     items.value = []
     return
   }
-  console.log(search)
 
   const { results } = await searchApi({ term: search, entity: entity as SearchAPI_Entity })
   items.value = results
@@ -124,7 +132,7 @@ definePage({
   >
     <template #item.actions="{ item }">
       <v-btn-group density="compact">
-        <v-btn icon="mdi-download" :disabled="!session.url" flat @click="downloadTrack(session.url, item)"></v-btn>
+        <v-btn icon="mdi-download" :disabled="!session.url" flat @click="onDownload(item)"></v-btn>
         <v-btn icon="mdi-eye" flat :to="`/${item.wrapperType}/${item.trackId || item.collectionId || item.artistId}`"></v-btn>
       </v-btn-group>
     </template>
