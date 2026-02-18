@@ -41,9 +41,9 @@
 
 <template>
   <Flex column :gap="1">
-    <p v-if="session.result" class="text-sm-body-2 text-grey-darken-1 mb-1">{{ session.result.fullTitle }}</p>
+    <p v-if="session.result" class="text-body-2 text-grey-darken-1 mb-1">{{ session.result.fullTitle }}</p>
     <v-form
-        class="d-flex align-center ga-2"
+        class="d-flex align-center ga-1 ga-sm-2"
         :class="props.formClass"
         :disabled="isLoading"
         @submit.prevent="onSubmit"

@@ -50,8 +50,8 @@ const heightStyle = computed(() => {
   <v-card flat v-bind="props">
     <v-card-text :class="props.contentClass">
       <span v-if="props.cardTitle" class="d-block text-h6">{{ props.cardTitle }}</span>
-      <pre v-if="!props.showDiff || !prevItem" class="rounded pa-4 overflow-auto bg-black text-white" :style="{ maxHeight: heightStyle, minHeight: '2em' }">{{ JSON.stringify(item || {}, null, 2) }}</pre>
-      <div v-else class="rounded pa-4 overflow-auto bg-black text-white" :style="{ height: heightStyle }">
+      <pre v-if="!props.showDiff || !prevItem" class="rounded pa-2 pa-sm-4 overflow-auto bg-black text-white" :style="{ maxHeight: heightStyle, minHeight: '2em' }">{{ JSON.stringify(item || {}, null, 2) }}</pre>
+      <div v-else class="rounded pa-2 pa-sm-4 overflow-auto bg-black text-white" :style="{ height: heightStyle }">
         <template v-for="part in diffJson(prevItem, item)">
           <pre v-if="part.added" class="text-green">{{ part.value }}</pre>
           <pre v-else-if="part.removed" class="text-red">{{ part.value }}</pre>
@@ -59,7 +59,7 @@ const heightStyle = computed(() => {
         </template>
       </div>
     </v-card-text>
-    <v-card-actions v-if="props.copy || props.paste || $slots.appendActions || $slots.prependActions">
+    <v-card-actions v-if="props.copy || props.paste || $slots.appendActions || $slots.prependActions" class="flex-wrap border-t">
       <slot name="prependActions">
       </slot>
       <v-btn v-if="props.copy !== false" prepend-icon="mdi-content-copy" flat @click="copyJson">Copy</v-btn>

@@ -18,7 +18,7 @@ definePage({
 
 <template>
   <Flex class="mb-2" align="center" justify="space-between" :gap="2">
-    <span class="text-h4">Settings</span>
+    <span class="text-h5 text-sm-h4">Settings</span>
     <Flex :gap="2">
       <v-btn :disabled="!isChanged" prepend-icon="mdi-content-save" variant="tonal" color="success" flat @click="save">Save</v-btn>
       <v-btn :disabled="!isChanged" prepend-icon="mdi-restore" variant="tonal" color="error" flat @click="reset">Reset</v-btn>

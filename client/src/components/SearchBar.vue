@@ -21,7 +21,7 @@
 </script>
 
 <template>
-  <div class="d-flex align-center ga-2">
+  <div class="d-flex align-center flex-wrap ga-1 ga-sm-2">
     <v-text-field
         v-model="search"
         placeholder="Track, Artist or Album"
@@ -29,6 +29,7 @@
         rounded="sm"
         hide-details
         flat
+        :min-width="300"
     >
     </v-text-field>
     <v-select
@@ -39,6 +40,7 @@
           { title: 'Album', value: 'album' }
         ]"
         hide-details
+        :min-width="100"
     >
     </v-select>
     <slot></slot>

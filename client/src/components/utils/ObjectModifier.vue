@@ -14,6 +14,7 @@ const props = defineProps<{
   valueHint?: string
   keyLabel?: string
   valueLabel?: string
+  save?: boolean
 }>()
 
 const items = ref<[keyof T, string | number | boolean][]>(Object.entries(object.value))
@@ -41,9 +42,11 @@ function reset() {
   items.value = Object.entries(object.value)
 }
 
-async function save(event: SubmitEventPromise) {
-  const check = await event
-  if (!check.valid) return
+async function save(event?: SubmitEventPromise) {
+  if (event) {
+    const check = await event
+    if (!check.valid) return
+  }
 
   object.value = isArray.value ?
       items.value.map(([key, value]) => value) :
@@ -52,6 +55,15 @@ async function save(event: SubmitEventPromise) {
         return acc
       }, {} as T)
 }
+
+watch(items, () => {
+  if (props.save) return
+  save()
+}, { deep: true })
+
+watch(object, (obj) => {
+  items.value = Object.entries(obj)
+}, { deep: true })
 
 </script>
 
@@ -134,6 +146,7 @@ async function save(event: SubmitEventPromise) {
             Add
           </v-btn>
           <v-btn
+              v-if="props.save"
               type="submit"
               prepend-icon="mdi-content-save"
               flat
@@ -141,6 +154,7 @@ async function save(event: SubmitEventPromise) {
             Save
           </v-btn>
           <v-btn
+              v-if="props.save"
               prepend-icon="mdi-restore"
               flat
               @click="reset"

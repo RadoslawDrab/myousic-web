@@ -21,7 +21,7 @@ watch(() => route.path, (path) => {
   <v-app theme="dark">
     <v-theme-provider>
       <v-layout>
-        <v-main class="mx-auto pa-4 w-100" :style="{ 'max-width': '1000px' }">
+        <v-main class="mx-auto pa-2 pa-sm-4 w-100" :style="{ 'max-width': '1100px' }">
           <Flex class="mb-3 border-b" :gap="2" align="center" justify="space-between">
             <Flex align="center" :gap="2">
               <v-btn
