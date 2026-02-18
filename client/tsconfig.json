@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "types": [
+      "vite/client",
+      "unplugin-vue-router/client"
+    ],
     "target": "ES2022",
     "module": "ES2022",
     "moduleResolution": "Bundler",
@@ -15,6 +19,7 @@
   },
   "include": [
     "./src/**/*.ts",
+    "./src/**/*.vue",
     "./.config/*.d.ts"
   ],
   "exclude": ["node_modules", "dist"]

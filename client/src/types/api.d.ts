@@ -14,7 +14,6 @@ declare global {
     }
 
     export type SearchAPI_Explicitness = 'explicit' | 'cleaned' | 'notExplicit'
-    export type SearchAPI_WrapperType = 'track' | 'collection' | 'artist'
 
     export type SearchAPI_TrackResult = {
         wrapperType: 'track'
@@ -73,7 +72,8 @@ declare global {
         trackCount: number
     }
 
-    export type SearchAPI_Result = SearchAPI_TrackResult & SearchAPI_ArtistResult & SearchAPI_AlbumResult
+    export type SearchAPI_Result = SearchAPI_TrackResult | SearchAPI_ArtistResult | SearchAPI_AlbumResult
+    export type SearchAPI_ResultKeys = SearchAPI_TrackResult & SearchAPI_ArtistResult & SearchAPI_AlbumResult
 
     export type CustomTrack = Pick<
         SearchAPI_TrackResult,

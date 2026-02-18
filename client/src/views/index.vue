@@ -15,7 +15,7 @@ const headerFilter = useTemplateRef('headerFilter')
 const allHeaders = ref<DataTableHeader[]>([])
 const headers = ref(allHeaders.value)
 
-const urlKeys = computed<[keyof SearchAPI_Result, keyof SearchAPI_Result][]>(() => {
+const urlKeys = computed<[keyof SearchAPI_ResultKeys, keyof SearchAPI_ResultKeys][]>(() => {
   switch (session.value.entity) {
     case 'album':
       return [
@@ -39,13 +39,13 @@ const urlKeys = computed<[keyof SearchAPI_Result, keyof SearchAPI_Result][]>(() 
   }
 })
 
-const explicitKeys: (keyof SearchAPI_Result)[] = ['collectionExplicitness', 'trackExplicitness']
+const explicitKeys: (keyof SearchAPI_ResultKeys)[] = ['collectionExplicitness', 'trackExplicitness']
 
 async function onDownload(item: SearchAPI_Result) {
-  const _item: ExtendedTrack = { ...item }
-  const {lyrics, genres} = await getTrackData(item)
+  const _item = { ...item } as ExtendedTrack
+  const {lyrics, genres} = await getTrackData(_item)
   _item.lyrics = lyrics
-  _item.comment = renderComment(session.value.url, item, { genres, lyrics })
+  _item.comment = renderComment(session.value.url, _item, { genres, lyrics })
 
   await downloadTrack(session.value.url, _item)
 }

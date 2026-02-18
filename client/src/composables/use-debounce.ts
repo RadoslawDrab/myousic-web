@@ -12,6 +12,7 @@ export function useDebounce<T extends Record<string, any>>(targetRef: Ref<string
                 return
             }
             if (!options.targetKey) return
+            // @ts-expect-error Correct key
             targetRef.value[options.targetKey] = val
         }, delay)
     }, { immediate: options.immediate })
