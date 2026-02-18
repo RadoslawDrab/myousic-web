@@ -44,6 +44,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/settings': RouteRecordInfo<
+      '/settings',
+      '/settings',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/track/[item]': RouteRecordInfo<
       '/track/[item]',
       '/track/:item',
@@ -79,6 +86,12 @@ declare module 'vue-router/auto-routes' {
     'src/views/docs/comment.md': {
       routes:
         | '/docs/comment'
+      views:
+        | never
+    }
+    'src/views/settings.vue': {
+      routes:
+        | '/settings'
       views:
         | never
     }
