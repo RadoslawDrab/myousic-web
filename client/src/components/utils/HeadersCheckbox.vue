@@ -57,7 +57,7 @@ watch(allHeaders, (headers) => {
     >
       <div
           v-if="header.hide !== true"
-          class="d-flex"
+          class="d-flex align-center"
       >
         <v-icon icon="mdi-drag" class="cursor-grab"/>
         <v-checkbox-btn

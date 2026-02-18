@@ -90,17 +90,17 @@ watch(() => session.value.entity, (entity) => {
       break
     default:
       headers = [
+        { title: 'Actions', key: 'actions', removable: false, sortable: false },
         { title: 'Artwork', key: 'artworkUrl100' },
-        { title: 'Track Name', key: 'trackName', removable: false },
+        { title: 'Track Name', key: 'trackName' },
         { title: 'Track Censored Name', key: 'trackCensoredName', defaultShow: false },
         { title: 'Track Explicitness', key: 'trackExplicitness', defaultShow: false },
         { title: 'Track Data', key: 'trackData', defaultShow: false },
         { title: 'Disc Data', key: 'discData', defaultShow: false },
         { title: 'Track Time', key: 'trackTimeMillis', defaultShow: false },
         { title: 'Track Genre', key: 'primaryGenreName', defaultShow: false },
-        { title: 'Artist Name', key: 'artistName', removable: false },
+        { title: 'Artist Name', key: 'artistName' },
         ...albumHeaders,
-        { title: 'Actions', key: 'actions', removable: false, sortable: false },
       ]
       break
   }
@@ -153,6 +153,9 @@ definePage({
     </template>
     <template #item.trackTimeMillis="{ value }">
       {{ getTime(value) }}
+    </template>
+    <template #item.primaryGenreName="{ value }">
+      <v-chip base-color="primary">{{ value }}</v-chip>
     </template>
     <template #item.trackData="{ item }">
       {{ item.trackNumber }} / {{ item.trackCount }}
