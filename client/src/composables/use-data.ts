@@ -6,6 +6,7 @@ export interface SessionData {
     search?: string
     entity?: SearchAPI_Entity
     result?: API_SearchUrlResult
+    savedTrack?: Partial<ExtendedTrack>
 }
 export interface LocalData extends Settings {
 }

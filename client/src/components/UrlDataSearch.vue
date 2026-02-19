@@ -40,8 +40,8 @@
 </script>
 
 <template>
-  <Flex column :gap="1">
-    <p v-if="session.result" class="text-body-2 text-grey-darken-1 mb-1">{{ session.result.fullTitle }}</p>
+  <Flex column>
+    <v-btn v-if="session.result" class="align-self-start text-none text-left text-body-2 text-grey-darken-1 mb-1" :href="session.url" target="_blank" density="compact" variant="text" flat>{{ session.result.fullTitle }}</v-btn>
     <v-form
         class="d-flex align-center ga-1 ga-sm-2"
         :class="props.formClass"
