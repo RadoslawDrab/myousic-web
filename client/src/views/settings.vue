@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import useData from '@/composables/use-data'
 
-import { formatTitle } from '@/utils/string'
 import Json from '@/components/utils/Json.vue'
 import ListGroup from '@/components/utils/ListGroup.vue'
 import useSave from '@/composables/use-save'
 
 const { local } = useData()
-useTitle(formatTitle('Settings'))
 
 const { draft: settings, save, reset, isChanged } = useSave(local)
 
 definePage({
   meta: {
-    breadcrumbs: 'Settings'
+    title: 'Settings'
   }
 })
 </script>

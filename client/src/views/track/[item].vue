@@ -80,7 +80,7 @@ onMounted(async () => {
 
 definePage({
   meta: {
-    breadcrumbs: 'Track'
+    title: 'Track'
   }
 })
 </script>
@@ -123,9 +123,9 @@ definePage({
               <v-combobox
                   v-model:model-value="item.genres"
                   class="py-2"
-                  :items="item.genres"
                   variant="solo-filled"
                   chips
+                  closable-chips
                   multiple
                   hide-details
                   flat

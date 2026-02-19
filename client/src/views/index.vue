@@ -106,7 +106,7 @@ watch(items, (items) => {
 
 definePage({
   meta: {
-    breadcrumbs: 'Home'
+    title: 'Home'
   }
 })
 </script>

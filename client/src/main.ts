@@ -20,6 +20,15 @@ const vuetify = createVuetify({
       defaultSet: 'mdi'
     },
     defaults: {
+        VTextarea: {
+            variant: 'solo-filled'
+        },
+        VCombobox: {
+            variant: 'solo-filled'
+        },
+        VFileInput: {
+            variant: 'solo-filled'
+        },
         VTextField: {
             variant: 'solo-filled'
         },
