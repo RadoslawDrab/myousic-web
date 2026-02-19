@@ -26,18 +26,24 @@ const useApi = () => {
         lyrics?: string
         genres?: string[]
         comment?: string
+        artworkFile?: File
     }
-    async function downloadTrack(url: string, track: ExtendedTrack)
-    async function downloadTrack(url: string, track: SearchAPI_TrackResult, options?: ExtraOptions)
-    async function downloadTrack(url: string, track: SearchAPI_TrackResult | ExtendedTrack, options?: ExtraOptions) {
+    async function downloadTrack(url: string, track: SearchAPI_TrackResult | Partial<ExtendedTrack>, options?: ExtraOptions) {
         const _track = TRACK_KEYS.reduce((acc, key) => {
             acc[key] = track[key]
             return acc
         }, { ...(options || {})} as Record<string, any>)
-        const { fileName, downloadUrl } = await post<{ fileName: string, downloadUrl: string }>({
-            url,
-            track: { ..._track, comment: renderComment(url, track, options) }
-        }, {
+
+        const formData = new FormData()
+
+        formData.append('body', JSON.stringify({
+                url,
+                track: { ..._track, comment: renderComment(url, track, options) }
+            }
+        ))
+        if (options.artworkFile) formData.append('artworkFile', options.artworkFile)
+
+        const { fileName, downloadUrl } = await post<{ fileName: string, downloadUrl: string }>(formData, {
             baseUrl: import.meta.env.VITE_API_URL,
             path: [],
             query: {
@@ -47,7 +53,7 @@ const useApi = () => {
 
         download(fileName, downloadUrl)
     }
-    function renderComment(url: string, track: SearchAPI_TrackResult | ExtendedTrack, options?: ExtraOptions, renderError: boolean = false): string {
+    function renderComment(url: string, track: SearchAPI_TrackResult | Partial<ExtendedTrack>, options?: ExtraOptions, renderError: boolean = false): string {
         const _track = { ...track, ...(options || {})}
 
         if (!_track.comment) {

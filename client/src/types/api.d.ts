@@ -103,11 +103,12 @@ declare global {
         message: string
     }
     export type API_SearchUrlResult = {
+        id: string
         artist?: string
         fullTitle: string
-        thumbnail: string
+        artworkUrl: string
         title?: string
-        uploadDate: number
+        releaseDate: number
         url: string
     }
 }

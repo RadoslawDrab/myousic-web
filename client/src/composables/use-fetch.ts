@@ -7,7 +7,7 @@ type Options = {
     query?: Record<string, any>
     headers?: Record<string, any>
     path?: string | string[]
-    type?: 'json' | 'blob'
+    responseType?: 'json' | 'blob'
 }
 
 const useFetch = (options: Options = { }) => {
@@ -15,8 +15,9 @@ const useFetch = (options: Options = { }) => {
     const isLoading = ref<boolean>(false)
     const st = useStatus()
 
-    async function run<Resp>(body?: Record<string, any> | null, _options: Options = {}): Promise<Resp | null> {
+    async function run<Resp>(body?: Record<string, any> | FormData | null, _options: Options = {}): Promise<Resp | null> {
         try {
+            const method = this.toString().toUpperCase()
             isLoading.value = true
 
             const _opt = deepMerge(options, _options)
@@ -24,13 +25,19 @@ const useFetch = (options: Options = { }) => {
 
             const url = getApiUrl(_opt?.baseUrl, ...(_opt?.path || [])) + '?' + query.toString()
 
+            const isFormData = body && body instanceof FormData
+            const contentType = isFormData ? 'multipart/form-data' : 'application/json'
+
+            let _body: FormData = isFormData ? body : new FormData()
+            if (body && !(body instanceof FormData)) _body.append('body', JSON.stringify(body))
+
             const response = await fetch(url, {
-                method: this.toString().toUpperCase(),
+                method,
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': contentType,
                     ..._opt?.headers
                 },
-                body: body ? JSON.stringify(body) : undefined,
+                body: ['POST', 'PATCH', 'PUT'].includes(method) ? _body : undefined,
             })
 
             if (!response.ok) {
@@ -40,7 +47,7 @@ const useFetch = (options: Options = { }) => {
                 return null
             }
 
-            return await response[_opt.type || 'json']()
+            return await response[_opt.responseType || 'json']()
         } finally {
             isLoading.value = false
         }

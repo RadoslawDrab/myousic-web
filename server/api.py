@@ -1,3 +1,4 @@
+import json
 import traceback
 from datetime import datetime
 import re
@@ -38,16 +39,24 @@ def api():
 		with ydl:
 			# POST
 			if request.method == 'POST':
-				req: dict[str, any] = request.get_json()
+				body: dict[str, any] = json.loads(request.form.get('body'))
 
-				url: str = req.get('url')
-				track: dict = req.get('track')
+				url: str = body.get('url')
+				track: dict = body.get('track')
 
 				if not url or not track:
 					raise Status('No url or track provided', 400)
 
 
-				audio, target_file_path = get_track(ydl, url, file_name, output_path, track, int(request.args.get('artworkSize', 1000)))
+				audio, target_file_path = get_track(
+					ydl,
+					url,
+					file_name,
+					output_path,
+					track,
+					int(request.args.get('artworkSize', 1000)),
+					artwork_file=request.files.get('artworkFile')
+				)
 				audio.save()
 
 				return {
@@ -73,12 +82,13 @@ def api():
 
 			upload_date_timestamp = datetime(int(upload_date.get('year', 0)), int(upload_date.get('month', 0)), int(upload_date.get('day', 0))).timestamp()
 			return {
+				'id': uuid.uuid4(),
 				'fullTitle': title,
 				'title': extracted.strip(),
 				'artist': artist,
 				'url': url,
-				'thumbnail': info.get('thumbnail'),
-				'uploadDate': round(upload_date_timestamp * 1000, 0),
+				'artworkUrl': info.get('thumbnail'),
+				'releaseData': round(upload_date_timestamp * 1000, 0),
 			}
 	except Exception as e:
 		Logger.log(traceback.format_exc(), log_type='ERROR')
