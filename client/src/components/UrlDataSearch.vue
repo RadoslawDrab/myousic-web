@@ -48,7 +48,7 @@
         :disabled="isLoading"
         @submit.prevent="onSubmit"
     >
-      <v-text-field v-model="session.url" placeholder="Youtube URL" hide-details clearable></v-text-field>
+      <v-text-field v-model="session.url" placeholder="Youtube URL" clearable></v-text-field>
       <v-btn v-tooltip="'Search URL data'" icon="mdi-magnify" variant="text" type="submit" rounded="sm" flat />
     </v-form>
   </Flex>

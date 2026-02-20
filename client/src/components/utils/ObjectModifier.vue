@@ -84,7 +84,7 @@ watch(object, (obj) => {
           <v-text-field
               v-if="!isArray"
               v-model="items[index][0]"
-              variant="solo-filled"
+
               :rules="rules.key(index)"
               :placeholder="props.keyPlaceholder"
               :hint="props.keyHint"
@@ -102,7 +102,7 @@ watch(object, (obj) => {
             <v-text-field
                 v-if="!props.valueType || props.valueType === 'string'"
                 v-model="items[index][1]"
-                variant="solo-filled"
+
                 :rules="rules.value(index)"
                 :placeholder="props.valuePlaceholder"
                 :hint="props.valueHint"
@@ -114,7 +114,7 @@ watch(object, (obj) => {
             <v-number-input
                 v-else-if="props.valueType === 'number'"
                 v-model="items[index][1] as number"
-                variant="solo-filled"
+
                 :rules="rules.value(index)"
                 :placeholder="props.valuePlaceholder"
                 :hint="props.valueHint"
@@ -126,7 +126,7 @@ watch(object, (obj) => {
             <v-switch
                 v-else-if="props.valueType === 'boolean'"
                 v-model="items[index][1]"
-                variant="solo-filled"
+
                 :placeholder="props.valuePlaceholder"
                 :hint="props.valueHint"
                 :label="props.valueLabel || 'Value'"

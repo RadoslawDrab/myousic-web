@@ -14,30 +14,22 @@ import '@mdi/font/css/materialdesignicons.css'
 
 import App from './App.vue'
 
+const vuetifyInputOptions = {
+    variant: 'solo-filled',
+    hideDetails: true
+}
 
 const vuetify = createVuetify({
     icons: {
       defaultSet: 'mdi'
     },
     defaults: {
-        VTextarea: {
-            variant: 'solo-filled'
-        },
-        VCombobox: {
-            variant: 'solo-filled'
-        },
-        VFileInput: {
-            variant: 'solo-filled'
-        },
-        VTextField: {
-            variant: 'solo-filled'
-        },
-        VSelect: {
-            variant: 'solo-filled'
-        },
-        VNumberInput: {
-            variant: 'solo-filled'
-        }
+        VTextarea: vuetifyInputOptions,
+        VCombobox: vuetifyInputOptions,
+        VFileInput: vuetifyInputOptions,
+        VTextField: vuetifyInputOptions,
+        VSelect: vuetifyInputOptions,
+        VNumberInput: vuetifyInputOptions
     },
     components: vComponents,
     directives: vDirectives,

@@ -27,7 +27,7 @@
         placeholder="Track, Artist or Album"
         clearable
         rounded="sm"
-        hide-details
+
         flat
         :min-width="300"
     >
@@ -39,7 +39,7 @@
           { title: 'Artist', value: 'musicArtist' },
           { title: 'Album', value: 'album' }
         ]"
-        hide-details
+
         :min-width="100"
     >
     </v-select>

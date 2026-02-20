@@ -123,11 +123,11 @@ definePage({
               <v-combobox
                   v-model:model-value="item.genres"
                   class="py-2"
-                  variant="solo-filled"
+
                   chips
                   closable-chips
                   multiple
-                  hide-details
+
                   flat
               >
                 <template #chip="{ item, props: internalProps }">
@@ -149,9 +149,9 @@ definePage({
               <v-textarea
                   v-model="item.lyrics"
                   class="py-2"
-                  variant="solo-filled"
+
                   :max-rows="15"
-                  hide-details
+
                   auto-grow
               ></v-textarea>
             </td>
@@ -172,11 +172,11 @@ definePage({
               <v-textarea
                   v-model="itemComment"
                   class="py-2"
-                  variant="solo-filled"
+
                   :rows="2"
                   placeholder="E.g. [URL: {{ url }}]"
                   persistent-placeholder
-                  hide-details
+
                   auto-grow
               ></v-textarea>
               <div v-if="item.comment" class="border pa-2 text-gray-200" v-html="renderComment(session.url, item, {}, true)"></div>
