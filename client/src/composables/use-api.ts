@@ -27,6 +27,7 @@ const useApi = () => {
         genres?: string[]
         comment?: string
         artworkFile?: File
+        clipping?: [number | null, number | null]
     }
     async function downloadTrack(url: string, track: SearchAPI_TrackResult | Partial<ExtendedTrack>, options?: ExtraOptions) {
         const _track = TRACK_KEYS.reduce((acc, key) => {
@@ -47,7 +48,9 @@ const useApi = () => {
             baseUrl: import.meta.env.VITE_API_URL,
             path: [],
             query: {
-                artworkSize: local.value.artworkSize
+                artworkSize: local.value.artworkSize,
+                clipping: options.clipping || [null, null],
+                ...local.value.audio
             }
         })
 

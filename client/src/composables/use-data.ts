@@ -1,4 +1,5 @@
 import { useStorage } from '@vueuse/core'
+import { nullColor } from 'vuetify/components/VColorPicker/util'
 
 const useData = () => {
 	const session = useStorage<SessionData>(
@@ -25,7 +26,11 @@ const useData = () => {
             includedGenres: [],
             excludedGenres: [],
             lyricsModifier: {},
-            defaultComment: '[URL: {{ url }}]'
+            defaultComment: '[URL: {{ url }}]',
+            audio: {
+                extension: 'm4a',
+                sampleRate: 48000
+            }
         },
         localStorage,
         {

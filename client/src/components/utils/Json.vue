@@ -30,16 +30,23 @@ const props = withDefaults(defineProps<Props>(), {
 const cb = useClipboard()
 const status = useStatus()
 
+const emit = defineEmits<{
+  import: [item: object]
+  export: [item: object]
+}>()
 
 const item = defineModel<object>()
 const prevItem = defineModel<object>('previous')
+
 const importFile = reactive<{
   file?: File
   data?: object
   dialog: boolean
+  replace: boolean
   isLoading: boolean
 }>({
   dialog: false,
+  replace: true,
   isLoading: false
 })
 
@@ -78,11 +85,16 @@ async function exportJson() {
       (props.fileName || 'export') + '.json',
       new Blob([JSON.stringify(item.value, null, 2)], { type: 'application/json' })
   )
+
+  emit('export', item.value)
 }
 function importJson() {
-  item.value = { ...getValue(item.value), ...importFile.data }
+  const obj = importFile.replace ? importFile.data : { ...getValue(item.value), ...importFile.data }
 
+  item.value = obj
   importFile.dialog = false
+
+  emit('import', obj)
 }
 
 
@@ -121,9 +133,12 @@ watch(() => importFile.file, async (file) => {
             <Flex column>
               <span class="text-h4">Import</span>
               <v-divider />
-              <v-file-input v-model="importFile.file" label="Import File" prepend-icon="" accept="application/json"></v-file-input>
+              <Flex column>
+                <v-file-input v-model="importFile.file" class="flex-grow-1" label="Import File" prepend-icon="" accept="application/json"></v-file-input>
+                <v-checkbox-btn v-model="importFile.replace" label="Replace existing" />
+              </Flex>
               <Json v-if="importFile.data" v-model="importFile.data" v-model:previous="item" content-class="pa-0" show-diff></Json>
-              <Flex justify="space-between">
+              <Flex align="center">
                 <v-btn prepend-icon="mdi-import" variant="tonal" color="primary" type="submit">Import</v-btn>
                 <v-btn prepend-icon="mdi-close" variant="tonal" color="error" @click="importFile.dialog = false">Close</v-btn>
               </Flex>

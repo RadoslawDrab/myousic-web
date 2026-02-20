@@ -9,6 +9,24 @@ const { local } = useData()
 
 const { draft: settings, save, reset, isChanged } = useSave(local)
 
+
+const sampleRates = computed(() => {
+  switch (settings.value.audio.extension) {
+    case 'mp3':
+      return [33000, 44100, 48000]
+    case 'm4a':
+      return [44100, 48000, 96000]
+    case 'opus':
+      return [44100, 48000]
+    default:
+      return [44100, 48000, 96000, 128000, 192000]
+  }
+})
+
+watch(() => settings.value.audio.extension, () => {
+  settings.value.audio.sampleRate = Math.min(settings.value.audio.sampleRate, Math.max(...sampleRates.value))
+}, { immediate: true })
+
 definePage({
   meta: {
     title: 'Settings'
@@ -34,6 +52,8 @@ definePage({
       show-diff
       export
       import
+
+      @import="save()"
   />
   <v-list class="d-flex flex-column ga-2 bg-transparent">
     <ListGroup title="Lyrics" group-class="border" group-content-class="pa-4 border-t d-flex flex-column ga-4">
@@ -63,8 +83,10 @@ definePage({
     <ListGroup title="Download" group-class="border" group-content-class="pa-4 border-t">
       <template #group>
         <Flex column :gap="2">
-          <v-number-input v-model="settings.artworkSize" variant="solo-filled" label="Artwork Size" :min="250" :max="2000" :step="50" hide-details></v-number-input>
-          <v-textarea v-model="settings.defaultComment" variant="solo-filled" label="Default Comment" placeholder="E.g. [URL: {{ url }}]" :rows="2" auto-grow hide-details persistent-placeholder></v-textarea>
+          <v-number-input v-model="settings.artworkSize" label="Artwork Size" :min="250" :max="2000" :step="50"></v-number-input>
+          <v-select v-model="settings.audio.extension" label="Extension" :items="['m4a', 'mp3', 'wav', 'opus', 'flac']"></v-select>
+          <v-select v-model="settings.audio.sampleRate" label="Sample Rate" :items="sampleRates.map(v => ({ title: ((v / 1000).toFixed(1).replace(/\.0$/, '')) + ' kHz', value: v }))"></v-select>
+          <v-textarea v-model="settings.defaultComment" label="Default Comment" placeholder="E.g. [URL: {{ url }}]" :rows="2" auto-grow persistent-placeholder></v-textarea>
         </Flex>
       </template>
     </ListGroup>

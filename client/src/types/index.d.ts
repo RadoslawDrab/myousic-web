@@ -30,6 +30,11 @@ declare global {
     export type LocalData = {
         lyricsProviders: LyricsProvider[]
         artworkSize: number
+        audio: {
+            extension: string
+            sampleRate: number
+        }
+
         lyricsModifier: Record<string, string>
         includedGenres: string[]
         excludedGenres: string[]

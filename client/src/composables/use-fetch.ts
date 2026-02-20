@@ -26,7 +26,6 @@ const useFetch = (options: Options = { }) => {
             const url = getApiUrl(_opt?.baseUrl, ...(_opt?.path || [])) + '?' + query.toString()
 
             const isFormData = body && body instanceof FormData
-            const contentType = isFormData ? 'multipart/form-data' : 'application/json'
 
             let _body: FormData = isFormData ? body : new FormData()
             if (body && !(body instanceof FormData)) _body.append('body', JSON.stringify(body))
@@ -34,7 +33,6 @@ const useFetch = (options: Options = { }) => {
             const response = await fetch(url, {
                 method,
                 headers: {
-                    'Content-Type': contentType,
                     ..._opt?.headers
                 },
                 body: ['POST', 'PATCH', 'PUT'].includes(method) ? _body : undefined,
