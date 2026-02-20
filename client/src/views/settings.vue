@@ -24,7 +24,17 @@ definePage({
       <v-btn :disabled="!isChanged" prepend-icon="mdi-restore" variant="tonal" color="error" flat @click="reset">Reset</v-btn>
     </Flex>
   </Flex>
-  <Json v-model="settings" v-model:previous="local" class="bg-transparent" card-title="" content-class="pa-0" :max-content-height="10" show-diff />
+  <Json
+      v-model="settings"
+      v-model:previous="local"
+      class="bg-transparent"
+      card-title=""
+      content-class="pa-0"
+      :max-content-height="10"
+      show-diff
+      export
+      import
+  />
   <v-list class="d-flex flex-column ga-2 bg-transparent">
     <ListGroup title="Lyrics" group-class="border" group-content-class="pa-4 border-t d-flex flex-column ga-4">
       <template #group>

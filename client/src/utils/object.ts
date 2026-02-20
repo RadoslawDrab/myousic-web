@@ -18,3 +18,18 @@ export function deepMerge<T extends object>(target: T, ...sources: object[]): T 
     }
     return deepMerge(target, ...sources);
 }
+
+export function sanitizeObject<T extends object>(obj: object, keysOrObject: T | (keyof T)[]): Partial<T> {
+    const keys = Array.isArray(keysOrObject) ? keysOrObject : Object.keys(keysOrObject)
+
+    return keys
+        // @ts-ignore
+        .filter(key => obj[key] !== undefined)
+        .reduce((acc, key) => {
+            return {
+                ...acc,
+                // @ts-ignore
+                [key]: obj[key]
+            }
+        }, {})
+}

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { download } from '@/utils'
+import { sanitizeObject } from '@/utils/object'
 import { diffJson } from 'diff'
 import useStatus from '@/composables/use-status'
 import { useClipboard } from '@vueuse/core'
@@ -8,23 +10,54 @@ import { VCard } from 'vuetify/components'
 interface Props extends /* @vue-ignore */ Partial<VCard['$props']> {
   copy?: boolean
   paste?: boolean
+  export?: boolean
+  import?: boolean
   cardTitle?: string
   contentClass?: string
   showDiff?: boolean
   maxContentHeight?: string | number
+  fileName?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   cardTitle: 'JSON',
-  copy: true,
-  paste: true
+  copy: false,
+  paste: false,
+  export: false,
+  import: false
 })
-
-const item = defineModel<any>()
-const prevItem = defineModel<any>('previous')
 
 const cb = useClipboard()
 const status = useStatus()
+
+
+const item = defineModel<object>()
+const prevItem = defineModel<object>('previous')
+const importFile = reactive<{
+  file?: File
+  data?: object
+  dialog: boolean
+  isLoading: boolean
+}>({
+  dialog: false,
+  isLoading: false
+})
+
+const heightStyle = computed(() => {
+  if (!props.maxContentHeight) return 'auto'
+  return typeof props.maxContentHeight === 'number' ? `calc(2rem * ${Math.max(props.maxContentHeight, 1)})` : props.maxContentHeight
+})
+
+function getValue(value: string | object) {
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value)
+    } catch {
+      return {}
+    }
+  }
+  return value
+}
 
 async function copyJson() {
   await cb.copy(JSON.stringify(item.value, null, 2))
@@ -40,10 +73,26 @@ async function pasteJson() {
   }
 }
 
-const heightStyle = computed(() => {
-  if (!props.maxContentHeight) return 'auto'
-  return typeof props.maxContentHeight === 'number' ? `calc(2rem * ${Math.max(props.maxContentHeight, 1)})` : props.maxContentHeight
-})
+async function exportJson() {
+  download(
+      (props.fileName || 'export') + '.json',
+      new Blob([JSON.stringify(item.value, null, 2)], { type: 'application/json' })
+  )
+}
+function importJson() {
+  item.value = { ...getValue(item.value), ...importFile.data }
+
+  importFile.dialog = false
+}
+
+
+
+watch(() => importFile.file, async (file) => {
+  importFile.isLoading = true
+  if (!file || file.type.toLowerCase() !== 'application/json') return importFile.data = null
+  importFile.data = sanitizeObject(getValue(await file.text()), getValue(item.value))
+  importFile.isLoading = false
+}, { deep: true })
 </script>
 
 <template>
@@ -59,11 +108,29 @@ const heightStyle = computed(() => {
         </template>
       </div>
     </v-card-text>
-    <v-card-actions v-if="props.copy || props.paste || $slots.appendActions || $slots.prependActions" class="flex-wrap border-t">
+    <v-card-actions v-if="props.copy || props.paste || props.export || props.import || $slots.appendActions || $slots.prependActions" class="flex-wrap border-t">
       <slot name="prependActions">
       </slot>
-      <v-btn v-if="props.copy !== false" prepend-icon="mdi-content-copy" flat @click="copyJson">Copy</v-btn>
-      <v-btn v-if="props.paste !== false" prepend-icon="mdi-content-paste" flat @click="pasteJson">Paste</v-btn>
+      <v-btn v-if="props.copy" prepend-icon="mdi-content-copy" flat @click="copyJson">Copy</v-btn>
+      <v-btn v-if="props.paste" prepend-icon="mdi-content-paste" flat @click="pasteJson">Paste</v-btn>
+      <v-btn v-if="props.export" prepend-icon="mdi-export" flat @click="exportJson">Export</v-btn>
+      <v-btn v-if="props.import" prepend-icon="mdi-import" flat @click="importFile.dialog = !importFile.dialog">Import</v-btn>
+      <v-dialog v-model="importFile.dialog" :max-width="700">
+        <v-sheet>
+          <v-form class="pa-2 pa-sm-4" @submit.prevent="importJson" :loading="importFile.isLoading" :disabled="importFile.isLoading">
+            <Flex column>
+              <span class="text-h4">Import</span>
+              <v-divider />
+              <v-file-input v-model="importFile.file" label="Import File" prepend-icon="" accept="application/json"></v-file-input>
+              <Json v-if="importFile.data" v-model="importFile.data" v-model:previous="item" content-class="pa-0" show-diff></Json>
+              <Flex justify="space-between">
+                <v-btn prepend-icon="mdi-import" variant="tonal" color="primary" type="submit">Import</v-btn>
+                <v-btn prepend-icon="mdi-close" variant="tonal" color="error" @click="importFile.dialog = false">Close</v-btn>
+              </Flex>
+            </Flex>
+          </v-form>
+        </v-sheet>
+      </v-dialog>
       <slot name="appendActions">
       </slot>
     </v-card-actions>
