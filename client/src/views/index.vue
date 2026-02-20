@@ -155,5 +155,10 @@ definePage({
     <template #item.discData="{ item }">
       {{ item.discNumber }} / {{ item.discCount }}
     </template>
+    <template #no-data>
+          <v-btn class="text-none" to="/download" variant="tonal" color="primary" flat>
+            Download
+          </v-btn>
+    </template>
   </v-data-table>
 </template>

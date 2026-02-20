@@ -45,6 +45,7 @@ watch(() => route.meta, (meta) => {
               </v-btn>
               <v-btn class="text-none" to="/settings" prepend-icon="mdi-cog" variant="plain" flat active-color="primary">Settings</v-btn>
               <v-btn class="text-none" to="/docs" prepend-icon="mdi-file-document" variant="plain" flat active-color="primary">Docs</v-btn>
+              <v-btn class="text-none" to="/download" prepend-icon="mdi-download" variant="plain" flat active-color="primary">Download</v-btn>
             </Flex>
             <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
           </Flex>
