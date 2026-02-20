@@ -11,6 +11,7 @@ from providers import find_lyrics_provider
 from utils import Status, get_args, get_env
 from yt_dlp import YoutubeDL
 
+from utils.conversion import validate_sample_rate
 from utils.logger import Logger
 from utils.track import get_track
 from utils.track_data import Genre, Lyrics
@@ -20,16 +21,26 @@ temp_path = Path(get_env('TEMP_PATH', default='./temp'))
 
 def api():
 	try:
+		extension = request.args.get('extension', 'm4a')
+		sample_rate = int(request.args.get('sampleRate', 48000))
+		clipping = request.args.get('clippingStart'), request.args.get('clippingEnd')
+
+		sample_rate = validate_sample_rate(extension, sample_rate)
+
 		id = uuid.uuid4()
-		file_name = f'{id}.m4a'
+		file_name = Path(f'{id}.{extension}')
+
 		ydl = YoutubeDL({
-			'format': 'm4a/bestaudio/best',
-			'outtmpl': file_name,
+			'format': 'bestaudio/best',
+			'outtmpl': file_name.stem + '.%(ext)s',
 			'quiet': True,
 			'postprocessors': [{  # Extract audio using ffmpeg
 				'key': 'FFmpegExtractAudio',
-				'preferredcodec': 'm4a',
+				'preferredcodec': extension,
 			}],
+			'postprocessor_args': [
+				'-ar', str(sample_rate),
+			],
 			'paths': {
 				'home': str(output_path),
 				'temp': str(temp_path)
@@ -39,7 +50,7 @@ def api():
 		with ydl:
 			# POST
 			if request.method == 'POST':
-				body: dict[str, any] = json.loads(request.form.get('body'))
+				body: dict[str, any] = json.loads(request.form.get('body', '{}'))
 
 				url: str = body.get('url')
 				track: dict = body.get('track')
@@ -51,10 +62,9 @@ def api():
 				audio, target_file_path = get_track(
 					ydl,
 					url,
-					file_name,
-					output_path,
+					output_path.joinpath(file_name),
 					track,
-					int(request.args.get('artworkSize', 1000)),
+					artwork_size=int(request.args.get('artworkSize', 1000)),
 					artwork_file=request.files.get('artworkFile')
 				)
 				audio.save()

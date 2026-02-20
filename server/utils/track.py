@@ -12,15 +12,22 @@ from yt_dlp import YoutubeDL
 
 from utils import Status
 
-def get_track(ydl: YoutubeDL, url: str, file_name: str, output_path: Path, track: dict, artwork_size: int = 1000, artwork_file: FileStorage | None = None):
-	info = ydl.extract_info(url, download=True)
-	ext = info.get('audio_ext')
-	file_path = output_path.joinpath(file_name)
+
+def get_track(
+	ydl: YoutubeDL,
+	url: str,
+	file_path: Path,
+	track: dict,
+	artwork_size: int = 1000,
+	artwork_file: FileStorage | None = None
+):
+	ydl.extract_info(url, download=True)
 
 	if not file_path.exists():
 		raise Status('File not found', 404)
 
-	target_file_path = output_path.joinpath(sanitize_filename(f'{track.get('artistName', 'NONE')} - {track.get('trackName', 'NONE')}') + f'.{ext}')
+
+	target_file_path = file_path.parent.joinpath(sanitize_filename(f'{track.get('artistName', 'NONE')} - {track.get('trackName', 'NONE')}') + file_path.suffix)
 
 	if target_file_path.exists():
 		target_file_path.unlink()
