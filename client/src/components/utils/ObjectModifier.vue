@@ -62,6 +62,7 @@ watch(items, () => {
 }, { deep: true })
 
 watch(object, (obj) => {
+  if (!obj) return
   items.value = Object.entries(obj)
 }, { deep: true })
 

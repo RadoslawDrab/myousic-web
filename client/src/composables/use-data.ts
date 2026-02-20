@@ -1,16 +1,5 @@
 import { useStorage } from '@vueuse/core'
 
-export interface SessionData {
-    items?: SearchAPI_Result[]
-    url?: string
-    search?: string
-    entity?: SearchAPI_Entity
-    result?: API_SearchUrlResult
-    savedTrack?: Partial<ExtendedTrack>
-}
-export interface LocalData extends Settings {
-}
-
 const useData = () => {
 	const session = useStorage<SessionData>(
         import.meta.env.VITE_APP_NAME.toUpperCase() + '_DATA',

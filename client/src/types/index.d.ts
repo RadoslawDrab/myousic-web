@@ -1,3 +1,5 @@
+import { LocalData } from '@/composables/use-data'
+
 export {}
 
 declare global {
@@ -15,8 +17,17 @@ declare global {
         formatter?: FormatterFunction | CellType
     }>
 
+    export interface SessionData {
+        items?: SearchAPI_Result[]
+        url?: string
+        search?: string
+        entity?: SearchAPI_Entity
+        result?: API_SearchUrlResult
+        savedTrack?: Partial<ExtendedTrack>
+    }
+
     export type LyricsProvider = 'AzLyrics' | 'Genius'
-    export type Settings = {
+    export type LocalData = {
         lyricsProviders: LyricsProvider[]
         artworkSize: number
         lyricsModifier: Record<string, string>
