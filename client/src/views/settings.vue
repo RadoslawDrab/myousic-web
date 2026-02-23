@@ -29,7 +29,10 @@ watch(() => settings.value.audio.extension, () => {
 
 definePage({
   meta: {
-    title: 'Settings'
+    title: 'Settings',
+    icon: 'mdi-cog',
+    includeInNav: true,
+    order: -1
   }
 })
 </script>

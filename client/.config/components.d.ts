@@ -14,6 +14,7 @@ declare module 'vue' {
     ArtworkImage: typeof import('./../src/components/ArtworkImage.vue')['default']
     ExplicitnessIcon: typeof import('./../src/components/ExplicitnessIcon.vue')['default']
     Flex: typeof import('./../src/components/utils/Flex.vue')['default']
+    Header: typeof import('./../src/components/Header.vue')['default']
     HeadersCheckbox: typeof import('./../src/components/utils/HeadersCheckbox.vue')['default']
     HeadersFilter: typeof import('./../src/components/utils/HeadersFilter.vue')['default']
     Index: typeof import('@/views/index.vue')['default']

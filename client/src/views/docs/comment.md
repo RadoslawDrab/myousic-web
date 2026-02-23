@@ -1,2 +1,0 @@
-# Comments
-- [Back](/docs)

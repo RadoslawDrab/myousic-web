@@ -1,3 +1,5 @@
+import 'vue-router'
+
 interface ImportMetaEnv {
     readonly BASE_URL: string
     readonly DEV: boolean
@@ -11,3 +13,14 @@ interface ImportMetaEnv {
 interface ImportMeta {
     readonly env: ImportMetaEnv
 }
+
+declare module 'vue-router' {
+    interface RouteMeta {
+        title: string
+        icon?: string
+        includeInNav?: boolean
+        order?: number
+    }
+}
+
+export {}

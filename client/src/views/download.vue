@@ -11,7 +11,11 @@
   const { renderComment, downloadTrack } = useApi()
 
   const track = ref<Partial<ExtendedTrack>>(session.value.savedTrack || {
-    comment: local.value.defaultComment
+    comment: local.value.defaultComment,
+    trackNumber: 1,
+    trackCount: 1,
+    discNumber: 1,
+    discCount: 1,
   })
   const { draft, save, reset, isChanged } = useSave(track)
 
@@ -69,24 +73,37 @@
 
   definePage({
     meta: {
-      title: 'Download'
+      title: 'Download',
+      icon: 'mdi-download',
+      includeInNav: true
     }
   })
 </script>
 
 <template>
-  <v-form class="d-flex flex-column ga-2" @submit.prevent="onSubmit">
+  <v-form class="d-flex flex-column ga-2 mb-5 mb-sm-0" @submit.prevent="onSubmit">
     <UrlDataSearch />
     <Flex class="flex-column flex-md-row">
       <Flex column grow>
+        <v-divider class="my-2" />
         <v-text-field v-model="draft.artistName" label="Artist Name"></v-text-field>
         <v-text-field v-model="draft.trackName" label="Track Name"></v-text-field>
         <v-text-field v-model="draft.collectionName" label="Album Name"></v-text-field>
+        <v-divider class="my-2" />
         <v-number-input v-model="releaseDate" label="Release Date" :max="new Date().getFullYear()"></v-number-input>
         <Flex class="flex-column flex-sm-row">
           <v-text-field v-model="draft.primaryGenreName" label="Primary Genre" />
           <v-combobox v-model:model-value="draft.genres" label="Genres" chips closable-chips multiple></v-combobox>
         </Flex>
+        <Flex class="flex-column flex-sm-row">
+            <v-number-input v-model="draft.trackNumber" label="Track Number" :min="1" />
+            <v-number-input v-model="draft.trackCount" label="Track Count" :min="1" />
+        </Flex>
+        <Flex class="flex-column flex-sm-row">
+            <v-number-input v-model="draft.discNumber" label="Disc Number" :min="1" />
+            <v-number-input v-model="draft.discCount" label="Disc Count" :min="1" />
+        </Flex>
+        <v-divider class="my-2" />
         <Flex class="flex-column flex-sm-row">
           <v-text-field v-model="draft.artworkUrl100" label="Artwork URL" :disabled="!!artworkFile"></v-text-field>
           <v-file-input v-model="artworkFile" label="Artwork File" accept="image/*" prepend-icon=""></v-file-input>
@@ -96,6 +113,7 @@
         <ArtworkImage :min-width="br.isGreater('sm') ? 400 : 200" :max-width="500" :url="artworkUrl" :small-render-size="500" :large-render-size="1000" />
       </Flex>
     </Flex>
+    <v-divider class="my-2" />
     <Flex class="flex-column flex-sm-row">
       <v-textarea v-model="draft.lyrics" class="flex-grow-1" label="Lyrics" :rows="5" :max-rows="15" auto-grow></v-textarea>
       <Flex column>
@@ -103,13 +121,14 @@
         <span class="border pa-2" :style="{ 'max-width': br.isGreater('sm') ? '500px' : 'auto'}">{{ renderComment(session.url, draft) }}</span>
       </Flex>
     </Flex>
+    <v-divider class="my-2 my-sm-4" />
 
     <Flex column>
       <Json v-model="draft" v-model:previous="track" show-diff :copy="false" :paste="false" />
-      <Flex>
+      <Flex class="flex-column flex-sm-row">
         <v-btn prepend-icon="mdi-content-save" :disabled="!isChanged" variant="tonal" color="success" flat @click="save">Save</v-btn>
         <v-btn prepend-icon="mdi-restore" :disabled="!isChanged" variant="tonal" color="error" flat @click="reset">Reset</v-btn>
-        <v-btn prepend-icon="mdi-download" :disabled="isChanged" type="submit">Download</v-btn>
+        <v-btn prepend-icon="mdi-download" :disabled="isChanged" color="primary" type="submit">Download</v-btn>
       </Flex>
     </Flex>
   </v-form>

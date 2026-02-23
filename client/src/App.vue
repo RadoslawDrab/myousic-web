@@ -30,25 +30,7 @@ watch(() => route.meta, (meta) => {
     <v-theme-provider>
       <v-layout>
         <v-main class="mx-auto pa-2 px-sm-4 w-100" :style="{ 'max-width': '1100px' }">
-          <Flex class="mb-3 border-b flex-wrap" :gap="2" align="center" justify="space-between">
-            <Flex class="flex-wrap align-start align-sm-center" :gap="2">
-              <v-btn
-                  class="text-none"
-                  prepend-icon="mdi-home"
-                  to="/"
-                  variant="plain"
-                  rounded="sm"
-                  flat
-                  active-color="primary"
-              >
-                {{ name }}
-              </v-btn>
-              <v-btn class="text-none" to="/settings" prepend-icon="mdi-cog" variant="plain" flat active-color="primary">Settings</v-btn>
-              <v-btn class="text-none" to="/docs" prepend-icon="mdi-file-document" variant="plain" flat active-color="primary">Docs</v-btn>
-              <v-btn class="text-none" to="/download" prepend-icon="mdi-download" variant="plain" flat active-color="primary">Download</v-btn>
-            </Flex>
-            <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
-          </Flex>
+          <Header />
           <RouterView />
           <StatusHandler />
         </v-main>

@@ -106,7 +106,8 @@ watch(items, (items) => {
 
 definePage({
   meta: {
-    title: 'Home'
+    title: 'Home',
+    icon: 'mdi-home',
   }
 })
 </script>
