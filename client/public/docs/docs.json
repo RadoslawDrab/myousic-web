@@ -1,0 +1,28 @@
+[
+  {
+	"title": "Introduction",
+  	"file": "01-introduction.md"
+  },
+  {
+	"title": "Workflow",
+	"file": "02-workflow.md"
+  },
+  {
+	"title": "Settings",
+	"file": "03-settings.md",
+	"children": [
+	  {
+		"title": "General",
+		"file": "settings/01-general.md"
+	  },
+	  {
+		"title": "Audio Metadata",
+		"file": "settings/02-metadata.md"
+	  }
+	]
+  },
+  {
+	"title": "Troubleshooting",
+	"file": "04-troubleshooting.md"
+  }
+]

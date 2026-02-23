@@ -30,23 +30,9 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/docs/': RouteRecordInfo<
-      '/docs/',
+    '/docs': RouteRecordInfo<
       '/docs',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/docs/comment': RouteRecordInfo<
-      '/docs/comment',
-      '/docs/comment',
-      Record<never, never>,
-      Record<never, never>,
-      | never
-    >,
-    '/docs/settings': RouteRecordInfo<
-      '/docs/settings',
-      '/docs/settings',
+      '/docs',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -91,21 +77,9 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'src/views/docs/index.md': {
+    'src/views/docs.vue': {
       routes:
-        | '/docs/'
-      views:
-        | never
-    }
-    'src/views/docs/comment.md': {
-      routes:
-        | '/docs/comment'
-      views:
-        | never
-    }
-    'src/views/docs/settings.md': {
-      routes:
-        | '/docs/settings'
+        | '/docs'
       views:
         | never
     }

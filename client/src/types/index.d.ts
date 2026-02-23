@@ -24,6 +24,7 @@ declare global {
         entity?: SearchAPI_Entity
         result?: API_SearchUrlResult
         savedTrack?: Partial<ExtendedTrack>
+        cachedDocs?: DocsData[]
     }
 
     export type LyricsProvider = 'AzLyrics' | 'Genius'
@@ -40,4 +41,14 @@ declare global {
         excludedGenres: string[]
         defaultComment: string
     }
+
+    export type DocsData = RecursiveObject<{
+        id?: string
+        icon?: string
+        title: string
+        file: string
+        tags?: string[]
+        description?: string
+        fileContent?: string
+    }>
 }

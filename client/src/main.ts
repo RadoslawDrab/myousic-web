@@ -24,6 +24,9 @@ const vuetify = createVuetify({
       defaultSet: 'mdi'
     },
     defaults: {
+        VBtn: {
+          variant: 'tonal'
+        },
         VTextarea: vuetifyInputOptions,
         VCombobox: vuetifyInputOptions,
         VFileInput: vuetifyInputOptions,

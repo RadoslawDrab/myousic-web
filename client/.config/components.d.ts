@@ -24,6 +24,7 @@ declare module 'vue' {
     ListSorting: typeof import('./../src/components/utils/ListSorting.vue')['default']
     ObjectModifier: typeof import('./../src/components/utils/ObjectModifier.vue')['default']
     ProgressBar: typeof import('./../src/components/utils/ProgressBar.vue')['default']
+    RecursiveListItem: typeof import('./../src/components/utils/RecursiveListItem.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchBar: typeof import('./../src/components/SearchBar.vue')['default']

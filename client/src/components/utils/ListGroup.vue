@@ -16,6 +16,7 @@ const props = withDefaults(defineProps<{
   props?: InstanceType<typeof VListItem>['$props']
   titleProps?: InstanceType<typeof VListItemTitle>['$props']
   groupProps?: InstanceType<typeof VListGroup>['$props']
+  itemCondition?: 'slot' | (() => boolean)
   groupCondition?: 'slot' | (() => boolean)
 }>(), {
   tooltip: false
@@ -31,13 +32,14 @@ const groupClasses = computed(() => getClass(props.groupClass))
 const groupItemClasses = computed(() => getClass(props.groupItemClass))
 const groupContentClasses = computed(() => getClass(props.groupContentClass))
 
-const condition = props.groupCondition && typeof props.groupCondition === 'function' ? props.groupCondition() : null
+const groupCondition = props.groupCondition && typeof props.groupCondition === 'function' ? props.groupCondition() : null
+const itemCondition = props.itemCondition && typeof props.itemCondition === 'function' ? props.itemCondition() : null
 
 </script>
 
 <template>
   <v-list-item
-      v-if="condition || !$slots.group"
+      v-if="itemCondition ?? !$slots.group"
       v-tooltip="props.tooltip !== false ? props.tooltip !== true ? props.tooltip : props.title : ''"
       :class="joinClass(...classes, ...itemClasses)"
       :prepend-icon="props.icon"
@@ -50,7 +52,7 @@ const condition = props.groupCondition && typeof props.groupCondition === 'funct
     <slot></slot>
   </v-list-item>
   <v-list-group
-      v-else
+      v-if="groupCondition ?? $slots.group"
       :class="joinClass(...classes, ...groupClasses)"
       :value="props.itemKey || props.title"
       v-bind="props.groupProps"

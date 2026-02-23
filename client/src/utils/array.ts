@@ -13,15 +13,32 @@ export function mapRecursive<T1 extends object, T2 extends object = T1>(items: R
     });
 }
 
-export function filterRecursive<T extends object>(items: RecursiveObject<T>[], callback: (item: T) => boolean): RecursiveObject<T>[] {
-    return items.filter(item => {
-        let isValid = callback(item)
-        if (isValid && item.children && item.children.length > 0) {
-            return filterRecursive(item.children, callback)
+export function filterRecursive<T extends object>(items: RecursiveObject<T>[], callback: (item: RecursiveObject<T>) => boolean, options: { deep?: boolean, exact?: boolean } = {}): RecursiveObject<T>[] {
+    return items.reduce((acc: RecursiveObject<T>[], item) => {
+        const filteredChildren = item.children ? filterRecursive(item.children, callback, options) : []
+
+        const matches = callback(item)
+
+        if (options.exact && matches) {
+            return [...acc, { ...item, children: [] }]
         }
 
-        return isValid
-    });
+        const hasMatchingChildren = filteredChildren.length > 0
+
+        if (!options?.deep) {
+            if (matches) acc.push({ ...item, children: [] })
+            else if (hasMatchingChildren) acc.push({ ...item, children: filteredChildren })
+        } else {
+            if (matches || hasMatchingChildren) {
+                acc.push({
+                    ...item,
+                    children: filteredChildren
+                })
+            }
+        }
+
+        return acc
+    }, [])
 }
 
 export function flattenRecursive<T extends object>(items: RecursiveObject<T>[], key: keyof T): string[] {
