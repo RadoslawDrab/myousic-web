@@ -23,12 +23,23 @@ def api():
 	try:
 		extension = request.args.get('extension', 'm4a')
 		sample_rate = int(request.args.get('sampleRate', 48000))
-		clipping = request.args.get('clippingStart'), request.args.get('clippingEnd')
+		clipping = re.match(r'(?P<start>\d+),(?P<end>\d+)', request.args.get('clipping', ''))
+		if clipping: clipping = clipping.groupdict()
 
 		sample_rate = validate_sample_rate(extension, sample_rate)
 
 		id = uuid.uuid4()
 		file_name = Path(f'{id}.{extension}')
+
+		postprocessors_args = [
+			'-ar', str(sample_rate),
+		]
+
+		if clipping:
+			postprocessors_args.extend([
+				'-ss', str(int(clipping.get('start', '0')) / 1000),
+				'-to', str(int(clipping.get('end', '0')) / 1000)
+			])
 
 		ydl = YoutubeDL({
 			'format': 'bestaudio/best',
@@ -38,9 +49,7 @@ def api():
 				'key': 'FFmpegExtractAudio',
 				'preferredcodec': extension,
 			}],
-			'postprocessor_args': [
-				'-ar', str(sample_rate),
-			],
+			'postprocessor_args': postprocessors_args,
 			'paths': {
 				'home': str(output_path),
 				'temp': str(temp_path)
@@ -50,6 +59,8 @@ def api():
 		with ydl:
 			# POST
 			if request.method == 'POST':
+				print(postprocessors_args)
+				# raise Status(500, 'Error')
 				body: dict[str, any] = json.loads(request.form.get('body', '{}'))
 
 				url: str = body.get('url')
@@ -91,6 +102,18 @@ def api():
 			upload_date = upload_date.groupdict() if upload_date else {}
 
 			upload_date_timestamp = datetime(int(upload_date.get('year', 0)), int(upload_date.get('month', 0)), int(upload_date.get('day', 0))).timestamp()
+
+			duration = info.get('duration_string')
+
+			duration_match = re.match(r'(?P<hours>\d*?):?(?P<minutes>\d*?):?(?P<seconds>\d+?)$', str(duration)) if duration else None
+			if duration_match:
+				duration_times = duration_match.groupdict()
+				duration = 0
+				duration += int(duration_times.get('hours', 0) or 0) * 60 * 60 * 1000
+				duration += int(duration_times.get('minutes', 0) or 0) * 60 * 1000
+				duration += int(duration_times.get('seconds', 0) or 0) * 1000
+
+
 			return {
 				'id': uuid.uuid4(),
 				'fullTitle': title,
@@ -98,6 +121,7 @@ def api():
 				'artist': artist,
 				'url': url,
 				'artworkUrl': info.get('thumbnail'),
+				'trackTimeMillis': 0 if type(duration) == str else duration,
 				'releaseData': round(upload_date_timestamp * 1000, 0),
 			}
 	except Exception as e:
