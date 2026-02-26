@@ -4,7 +4,7 @@ const useCache = (urlRef: Ref<string | null>, options?: { name?: string, init?: 
     const isLoading = ref(false)
     const error = ref<any>(null)
 
-    const execute = async (url: string) => {
+    const execute = async (url: string, fetchOptions?: RequestInit, force: boolean = false) => {
         isLoading.value = true
         error.value = null
 
@@ -12,13 +12,13 @@ const useCache = (urlRef: Ref<string | null>, options?: { name?: string, init?: 
             const cache = await caches.open(cacheName)
             const cachedResponse = await cache.match(url)
 
-            if (cachedResponse) {
+            if (cachedResponse && !force) {
                 data.value = await cachedResponse.text()
                 if (!options?.staleWhileRevalidate) return
             }
 
             // Background Network Fetch (Stale-While-Revalidate)
-            const response = await fetch(url, options?.init)
+            const response = await fetch(url, fetchOptions || options?.init)
             if (response.ok) {
                 const text = await response.clone().text()
 
@@ -48,7 +48,7 @@ const useCache = (urlRef: Ref<string | null>, options?: { name?: string, init?: 
         data,
         isLoading,
         error,
-        refresh: () => urlRef.value && execute(urlRef.value)
+        refresh: (init?: RequestInit, force: boolean = true) => urlRef.value && execute(urlRef.value, init, force)
     }
 }
 
