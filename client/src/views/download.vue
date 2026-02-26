@@ -2,6 +2,7 @@
   import useApi from '@/composables/use-api'
   import useData from '@/composables/use-data'
   import useSave from '@/composables/use-save'
+  import useSession from '@/composables/use-session'
   import { breakpointsVuetifyV3 } from '@vueuse/core'
   import { SubmitEventPromise } from 'vuetify/framework'
 
@@ -10,13 +11,14 @@
   const { session, local } = useData()
   const { renderComment, downloadTrack } = useApi()
 
-  const track = ref<Partial<ExtendedTrack>>(session.value.savedTrack || {
+  const track = useSession<Partial<ExtendedTrack>>({
     comment: local.value.defaultComment,
     trackNumber: 1,
     trackCount: 1,
     discNumber: 1,
     discCount: 1,
-  })
+  }, 'TRACK')
+
   const { draft, save, reset, isChanged } = useSave(track)
 
   const artworkFile = ref<File | null>(null)
