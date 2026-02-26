@@ -5,7 +5,6 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import VueRouter from 'unplugin-vue-router/vite'
-import Markdown from 'unplugin-vue-markdown/vite'
 
 export default defineConfig(({ mode }) => {
   const DEV = mode === 'development'
@@ -32,15 +31,8 @@ export default defineConfig(({ mode }) => {
             extensions: ['.vue', '.md'],
             dts: './.config/typed-router.d.ts'
         }),
-        Markdown({
-            headEnabled: true,
-            exposeFrontmatter: true,
-            extendFrontmatter(frontmatter) {
-                return { ...frontmatter }
-            }
-        }),
         vue({
-            include: [/\.vue$/, /\.md$/]
+            include: [/\.vue$/]
         }),
         vueDevTools(),
     ],
