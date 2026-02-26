@@ -91,11 +91,11 @@ function getRelativeDoc(deltaIndex: number, current: DocsData | null = currentDo
   return relativeDoc
 }
 
-async function getDocumentsData(): Promise<DocsData[]> {
+async function getDocumentsData() {
   try {
     isLoading.value = true
-    const resp = await fetch('/docs/docs.json', { cache: 'force-cache' })
-    return mapRecursive([...await resp.json()], (item: DocsData) => {
+    const resp = await fetch('/docs/docs.json', { cache: 'no-cache' })
+    docs.value = mapRecursive([...await resp.json()], (item: DocsData) => {
       if (item.id) return item
       return {
         id: uuid.v4(),
@@ -136,7 +136,7 @@ watch(cache.isLoading, (loading) => {
 
 onMounted(async () => {
   if (docs.value.length) return
-  docs.value = await getDocumentsData()
+  await getDocumentsData()
 })
 
 definePage({
@@ -152,7 +152,7 @@ definePage({
 <template>
   <Flex align="center" justify="space-between">
     <span class="d-block text-h5 text-sm-h4">Docs</span>
-    <v-btn icon="mdi-refresh" @click="cache.refresh()" variant="text"></v-btn>
+    <v-btn icon="mdi-refresh" @click="cache.refresh(); getDocumentsData()" variant="text" v-tooltip="'Refresh'" :loading="cache.isLoading.value"></v-btn>
   </Flex>
   <v-divider class="my-2" />
   <Flex>

@@ -95,34 +95,35 @@ definePage({
         </span>
       </v-btn>
     </v-card-title>
-    <v-card-text class="d-flex flex-wrap flex-md-nowrap align-start justify-center ga-3 ga-sm-5">
-      <ArtworkImage :small-render-size="500" :large-render-size="1000" :url="item.artworkUrl100" />
-      <v-table class="flex-grow-1">
-        <thead>
-          <tr>
-            <th :class="propertyCellClass">Property</th>
-            <th :class="valueCellClass">Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in rows">
-            <td :class="propertyCellClass">{{ row.property }}</td>
-            <td :class="valueCellClass">
-              <v-btn v-if="row.link" class="text-none px-0" variant="plain" target="_blank" :href="row.link" flat><span class="text-wrap">{{ row.value }}</span></v-btn>
-              <component v-else-if="row.component" :is="row.component" v-bind="row.componentProps"></component>
-              <v-chip v-else-if="row.chip" :color="typeof row.chip !== 'boolean' ? row.chip : 'secondary'">{{ row.value }}</v-chip>
-              <span v-else>{{ row.value }}</span>
-            </td>
-          </tr>
-          <tr>
-            <td :class="propertyCellClass">
-              <v-btn v-if="item.genresUrl" class="px-0 text-none" :href="item.genresUrl" variant="plain" target="_blank" flat>Genres</v-btn>
-              <template v-else>Genres</template>
-            </td>
-            <td :class="valueCellClass">
-              <v-combobox
-                  v-model:model-value="item.genres"
-                  class="py-2"
+    <v-card-text>
+      <Flex class="flex-md-nowrap" align="start" justify="center" :gap="['3', 'sm-5']" wrap>
+        <ArtworkImage :small-render-size="500" :large-render-size="1000" :url="item.artworkUrl100" max-width="250px" />
+        <v-table class="flex-grow-1">
+          <thead>
+            <tr>
+              <th :class="propertyCellClass">Property</th>
+              <th :class="valueCellClass">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in rows">
+              <td :class="propertyCellClass">{{ row.property }}</td>
+              <td :class="valueCellClass">
+                <v-btn v-if="row.link" class="text-none px-0" variant="plain" target="_blank" :href="row.link" flat><span class="text-wrap">{{ row.value }}</span></v-btn>
+                <component v-else-if="row.component" :is="row.component" v-bind="row.componentProps"></component>
+                <v-chip v-else-if="row.chip" :color="typeof row.chip !== 'boolean' ? row.chip : 'secondary'">{{ row.value }}</v-chip>
+                <span v-else>{{ row.value }}</span>
+              </td>
+            </tr>
+            <tr>
+              <td :class="propertyCellClass">
+                <v-btn v-if="item.genresUrl" class="px-0 text-none" :href="item.genresUrl" variant="plain" target="_blank" flat>Genres</v-btn>
+                <template v-else>Genres</template>
+              </td>
+              <td :class="valueCellClass">
+                <v-combobox
+                    v-model:model-value="item.genres"
+                    class="py-2"
 
                     chips
                     closable-chips
@@ -177,13 +178,19 @@ definePage({
                     placeholder="E.g. [URL: {{ url }}]"
                     persistent-placeholder
 
-                  auto-grow
-              ></v-textarea>
-              <div v-if="item.comment" class="border pa-2 text-gray-200" v-html="renderComment(session.url, item, {}, true)"></div>
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
+                    auto-grow
+                ></v-textarea>
+                <div v-if="item.comment" class="border pa-2 text-gray-200" v-html="renderComment(session.url, item, {}, true)"></div>
+              </td>
+            </tr>
+          </tbody>
+        </v-table>
+      </Flex>
+      <v-divider class="my-3" />
+      <Flex class="py-2" column>
+        <span class="text-body-1">Audio Clipping</span>
+        <Clipping v-model="item" />
+      </Flex>
     </v-card-text>
     <v-card-actions class="flex-wrap justify-end border-t">
       <v-btn :prepend-icon="censored ? 'mdi-eye' : 'mdi-eye-off'" variant="text" flat @click="censored = !censored">

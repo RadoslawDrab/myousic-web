@@ -123,6 +123,12 @@
     <v-divider class="my-2 my-sm-4" />
 
     <Flex column>
+      <span class="text-body-1">Audio Clipping</span>
+      <Clipping v-model="draft" />
+    </Flex>
+
+    <v-divider class="my-2 my-sm-4" />
+    <Flex column>
       <Json v-model="draft" v-model:previous="track" show-diff :copy="false" :paste="false" />
       <Flex class="flex-column flex-sm-row">
         <v-btn prepend-icon="mdi-content-save" :disabled="!isChanged" variant="tonal" color="success" flat @click="save">Save</v-btn>

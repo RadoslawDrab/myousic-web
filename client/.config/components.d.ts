@@ -12,6 +12,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ArtworkImage: typeof import('./../src/components/ArtworkImage.vue')['default']
+    Clipping: typeof import('./../src/components/Clipping.vue')['default']
+    ClippingButtons: typeof import('@/components/ClippingButtons.vue')['default']
     ExplicitnessIcon: typeof import('./../src/components/ExplicitnessIcon.vue')['default']
     Flex: typeof import('./../src/components/utils/Flex.vue')['default']
     Header: typeof import('./../src/components/Header.vue')['default']
