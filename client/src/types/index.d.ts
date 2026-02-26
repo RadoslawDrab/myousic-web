@@ -23,8 +23,6 @@ declare global {
         search?: string
         entity?: SearchAPI_Entity
         result?: API_SearchUrlResult
-        savedTrack?: Partial<ExtendedTrack>
-        cachedDocs?: DocsData[]
     }
 
     export type LyricsProvider = 'AzLyrics' | 'Genius'
