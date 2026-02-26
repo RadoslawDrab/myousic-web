@@ -27,13 +27,21 @@ const useApi = () => {
         genres?: string[]
         comment?: string
         artworkFile?: File
-        clipping?: [number | null, number | null]
+        clipping?: [number, number]
     }
     async function downloadTrack(url: string, track: SearchAPI_TrackResult | Partial<ExtendedTrack>, options?: ExtraOptions) {
         const _track = TRACK_KEYS.reduce((acc, key) => {
             acc[key] = track[key]
             return acc
         }, { ...(options || {})} as Record<string, any>)
+
+        const query = {
+            artworkSize: local.value.artworkSize,
+            ...local.value.audio
+        }
+        if (_track.clipping || options.clipping) {
+            query['clipping'] = _track.clipping ? _track.clipping : options.clipping
+        }
 
         const formData = new FormData()
 
@@ -42,16 +50,13 @@ const useApi = () => {
                 track: { ..._track, comment: renderComment(url, track, options) }
             }
         ))
-        if (options.artworkFile) formData.append('artworkFile', options.artworkFile)
+        if (options?.artworkFile) formData.append('artworkFile', options.artworkFile)
+
 
         const { fileName, downloadUrl } = await post<{ fileName: string, downloadUrl: string }>(formData, {
             baseUrl: import.meta.env.VITE_API_URL,
             path: [],
-            query: {
-                artworkSize: local.value.artworkSize,
-                clipping: options.clipping || [null, null],
-                ...local.value.audio
-            }
+            query: query
         })
 
         download(fileName, downloadUrl)

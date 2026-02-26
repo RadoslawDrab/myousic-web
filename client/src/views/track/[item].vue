@@ -15,9 +15,9 @@ const { session, local } = useData()
 
 
 const props = withDefaults(defineProps<{
-  jsonKeys?: (keyof SearchAPI_TrackResult)[]
+  jsonKeys?: (keyof SearchAPI_TrackResult | keyof ExtendedTrack)[]
 }>(), {
-  jsonKeys: () => ['artistName', 'collectionName', 'collectionCensoredName', 'trackName', 'trackCensoredName', 'primaryGenreName', 'trackExplicitness', 'collectionExplicitness', 'trackNumber', 'trackCount', 'discNumber', 'discCount', 'trackTimeMillis', 'releaseDate', 'artworkUrl100']
+  jsonKeys: () => ['artistName', 'collectionName', 'collectionCensoredName', 'trackName', 'trackCensoredName', 'primaryGenreName', 'trackExplicitness', 'collectionExplicitness', 'trackNumber', 'trackCount', 'discNumber', 'discCount', 'trackTimeMillis', 'releaseDate', 'artworkUrl100', 'comment', 'lyrics', 'genres', 'clipping']
 })
 
 const item = computed<(SearchAPI_TrackResult & ExtendedTrack) | null>(() => ((session.value.items || []) as SearchAPI_TrackResult[]).find(track => track.trackId == route.params.item) || null)
@@ -124,58 +124,58 @@ definePage({
                   v-model:model-value="item.genres"
                   class="py-2"
 
-                  chips
-                  closable-chips
-                  multiple
+                    chips
+                    closable-chips
+                    multiple
 
-                  flat
-              >
-                <template #chip="{ item, props: internalProps }">
-                  <v-chip v-bind="internalProps">{{ pascalCase(item.value) }}</v-chip>
-                </template>
-                <template #item="{ item: internalItem, props: internalProps }">
-                  <v-list-item :title="pascalCase(internalItem.value)" variant="plain" v-bind="internalProps">
-                  </v-list-item>
-                </template>
-              </v-combobox>
-            </td>
-          </tr>
-          <tr>
-            <td :class="propertyCellClass">
-              <v-btn v-if="item.lyricsUrl" class="px-0 text-none" :href="item.lyricsUrl" variant="plain" target="_blank" flat>Lyrics</v-btn>
-              <template v-else>Lyrics</template>
-            </td>
-            <td :class="valueCellClass">
-              <v-textarea
-                  v-model="item.lyrics"
-                  class="py-2"
+                    flat
+                >
+                  <template #chip="{ item, props: internalProps }">
+                    <v-chip v-bind="internalProps">{{ pascalCase(item.value) }}</v-chip>
+                  </template>
+                  <template #item="{ item: internalItem, props: internalProps }">
+                    <v-list-item :title="pascalCase(internalItem.value)" variant="plain" v-bind="internalProps">
+                    </v-list-item>
+                  </template>
+                </v-combobox>
+              </td>
+            </tr>
+            <tr>
+              <td :class="propertyCellClass">
+                <v-btn v-if="item.lyricsUrl" class="px-0 text-none" :href="item.lyricsUrl" variant="plain" target="_blank" flat>Lyrics</v-btn>
+                <template v-else>Lyrics</template>
+              </td>
+              <td :class="valueCellClass">
+                <v-textarea
+                    v-model="item.lyrics"
+                    class="py-2"
 
-                  :max-rows="15"
+                    :max-rows="15"
 
-                  auto-grow
-              ></v-textarea>
-            </td>
-          </tr>
-          <tr>
-            <td :class="propertyCellClass">
-              <p>Comment</p>
-              <v-btn
-                  class="text-caption text-none pa-0"
-                  to="/docs/comment"
-                  variant="plain"
-                  target="_blank"
-                  density="compact">
-                See docs
-              </v-btn>
-            </td>
-            <td :class="valueCellClass">
-              <v-textarea
-                  v-model="itemComment"
-                  class="py-2"
+                    auto-grow
+                ></v-textarea>
+              </td>
+            </tr>
+            <tr>
+              <td :class="propertyCellClass">
+                <p>Comment</p>
+                <v-btn
+                    class="text-caption text-none pa-0"
+                    to="/docs"
+                    variant="plain"
+                    target="_blank"
+                    density="compact">
+                  See docs
+                </v-btn>
+              </td>
+              <td :class="valueCellClass">
+                <v-textarea
+                    v-model="itemComment"
+                    class="py-2"
 
-                  :rows="2"
-                  placeholder="E.g. [URL: {{ url }}]"
-                  persistent-placeholder
+                    :rows="2"
+                    placeholder="E.g. [URL: {{ url }}]"
+                    persistent-placeholder
 
                   auto-grow
               ></v-textarea>
@@ -190,10 +190,10 @@ definePage({
         {{ censored ? 'Censored' : 'Uncensored' }}
       </v-btn>
       <v-btn prepend-icon="mdi-play" flat target="_blank" :href="item.previewUrl">Preview</v-btn>
-      <v-btn prepend-icon="mdi-download" :disabled="!session.url" flat @click="downloadTrack(session.url, item)">
+      <v-btn prepend-icon="mdi-code-json" flat @click="jsonDialog = true">View JSON</v-btn>
+      <v-btn prepend-icon="mdi-download" color="primary" :disabled="!session.url" flat @click="downloadTrack(session.url, item)">
         Download
       </v-btn>
-      <v-btn prepend-icon="mdi-code-json" flat @click="jsonDialog = true">View JSON</v-btn>
     </v-card-actions>
   </v-card>
   <span v-else>Not found</span>

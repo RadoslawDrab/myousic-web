@@ -96,6 +96,7 @@ declare global {
         genresUrl?: string
         lyrics?: string
         lyricsUrl?: string
+        clipping?: [number, number]
     }
 
     export type API_Response = {
@@ -110,5 +111,6 @@ declare global {
         title?: string
         releaseDate: number
         url: string
+        trackTimeMillis: number
     }
 }

@@ -1,5 +1,3 @@
-import { LocalData } from '@/composables/use-data'
-
 export {}
 
 declare global {

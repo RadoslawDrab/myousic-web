@@ -50,6 +50,7 @@
     draft.value.trackName = searchResult.title
     draft.value.collectionName = searchResult.title + ' - Single'
     draft.value.artworkUrl100 = searchResult.artworkUrl
+    draft.value.trackTimeMillis = searchResult.trackTimeMillis
 
     if (searchResult.releaseDate) {
       draft.value.releaseDate = new Date(searchResult.releaseDate).toISOString()
@@ -58,10 +59,6 @@
       draft.value.releaseDate = date.toISOString()
     }
   }, { immediate: true, deep: true })
-
-  watch(track, (track) => {
-    session.value.savedTrack = track
-  }, { deep: true })
 
   watch(artworkFile, (newFile) => {
     if (objectUrl.value) URL.revokeObjectURL(objectUrl.value)

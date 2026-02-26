@@ -1,4 +1,4 @@
-export const TRACK_KEYS: (keyof SearchAPI_TrackResult | keyof ExtendedTrack)[] = ['trackName', 'artistName', 'collectionName', 'artworkUrl100', 'primaryGenreName', 'trackNumber', 'trackCount', 'discNumber', 'discCount', 'trackTimeMillis', 'releaseDate', 'comment', 'lyrics', 'genres']
+export const TRACK_KEYS: (keyof SearchAPI_TrackResult | keyof ExtendedTrack)[] = ['trackName', 'artistName', 'collectionName', 'artworkUrl100', 'primaryGenreName', 'trackNumber', 'trackCount', 'discNumber', 'discCount', 'trackTimeMillis', 'releaseDate', 'comment', 'lyrics', 'genres', 'clipping']
 
 export function getArtworkUrl(url: string, size: number = 1000) {
     const clamped = Math.round(Math.max(Math.min(size, 3000), 100))
