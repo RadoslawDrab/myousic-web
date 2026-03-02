@@ -44,7 +44,7 @@ const currentDoc = computed<DocsData | null>({
   }
 })
 
-const cache = useCache(computed(() => currentDoc.value?.file ? '/docs/' + currentDoc.value.file : null), { name: 'DOCS' })
+const cache = useCache(computed(() => currentDoc.value?.file ? '/docs/' + currentDoc.value.file : null))
 
 
 const previousDoc = computed(() => getRelativeDoc(-1))
@@ -211,9 +211,9 @@ definePage({
         <v-skeleton-loader v-if="isLoading" type="article"></v-skeleton-loader>
 
         <Flex class="border-t pt-2 mt-4" justify="space-between">
-          <v-btn v-if="previousDoc" prepend-icon="mdi-chevron-left" @click="currentDoc = previousDoc">{{ previousDoc.title }}</v-btn>
+          <v-btn v-if="previousDoc" prepend-icon="mdi-chevron-left" :append-icon="previousDoc.icon" @click="currentDoc = previousDoc">{{ previousDoc.title }}</v-btn>
           <div v-else></div>
-          <v-btn v-if="nextDoc" append-icon="mdi-chevron-right" @click="currentDoc = nextDoc">{{ nextDoc.title }}</v-btn>
+          <v-btn v-if="nextDoc" append-icon="mdi-chevron-right" :prepend-icon="nextDoc.icon" @click="currentDoc = nextDoc">{{ nextDoc.title }}</v-btn>
           <div v-else></div>
         </Flex>
       </Flex>

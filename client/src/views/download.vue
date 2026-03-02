@@ -72,7 +72,7 @@
 
   definePage({
     meta: {
-      title: 'Download',
+      title: 'Manual Download',
       icon: 'mdi-download',
       includeInNav: true
     }

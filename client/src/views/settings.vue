@@ -32,7 +32,7 @@ definePage({
     title: 'Settings',
     icon: 'mdi-cog',
     includeInNav: true,
-    order: -1
+    order: 100
   }
 })
 </script>

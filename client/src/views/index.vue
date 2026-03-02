@@ -106,8 +106,10 @@ watch(items, (items) => {
 
 definePage({
   meta: {
-    title: 'Home',
-    icon: 'mdi-home',
+    title: 'iTunes Download',
+    icon: 'mdi-magnify',
+    includeInNav: true,
+    order: -1
   }
 })
 </script>
