@@ -1,12 +1,18 @@
 <script setup lang="ts">
+  import useCache from '@/composables/use-cache'
+  import { joinClass } from '@/utils/string'
+
   const route = useRoute()
   const router = useRouter()
+  const cache = useCache(computed(() => '/social.json'))
 
-  const name = computed(() => import.meta.env.VITE_APP_NAME)
   const breadcrumbs = computed<string[]>(() => {
     return route.matched.filter(v => v.meta.title || v.name).map(v => (v.meta.title || v.name) as string)
   })
-  const links = computed<{ icon: string, path: string, title: string }[]>(() =>
+
+  const socials = ref<Social[]>([])
+
+  const links = computed<{ icon: string, path: string, title: string, class?: string[] }[]>(() =>
       router.getRoutes()
             .filter(route => route.meta.includeInNav)
             .sort((r1, r2) => (r1.meta.order ?? 0) - (r2.meta.order ?? 0))
@@ -15,30 +21,47 @@
                 icon: route.meta.icon || '',
                 title: route.meta.title || 'Link',
                 path: route.path || '/',
+                class: Array.isArray(route.meta.class) ? route.meta.class : [route.meta.class]
               }
             })
   )
+
+  watch(cache.data, (data) => {
+    try {
+      socials.value = JSON.parse(data)
+    } catch (e) {
+      console.error(e)
+    }
+  })
+
 </script>
 
 <template>
   <Flex class="mb-3 border-b flex-wrap" :gap="2" align="center" justify="space-between">
     <Flex class="flex-wrap align-start align-sm-center" :gap="2">
       <v-btn
-          class="text-none"
-          prepend-icon="mdi-home"
-          to="/"
+          v-for="link in links"
+          :class="joinClass('text-none', ...link.class)"
+          :to="link.path"
+          :prepend-icon="link.icon"
           variant="plain"
-          rounded="sm"
-          flat
           active-color="primary"
+          flat
       >
-        {{ name }}
+        {{ link.title }}
       </v-btn>
-      <v-btn v-for="link in links" class="text-none" :to="link.path" :prepend-icon="link.icon" variant="plain" active-color="primary" flat>{{ link.title }}</v-btn>
-<!--      <v-btn class="text-none" to="/settings" prepend-icon="mdi-cog" variant="plain" flat active-color="primary">Settings</v-btn>-->
-<!--      <v-btn class="text-none" to="/docs" prepend-icon="mdi-file-document" variant="plain" flat active-color="primary">Docs</v-btn>-->
-<!--      <v-btn class="text-none" to="/download" prepend-icon="mdi-download" variant="plain" flat active-color="primary">Download</v-btn>-->
     </Flex>
-    <v-breadcrumbs :items="breadcrumbs"></v-breadcrumbs>
+    <Flex align="center">
+      <v-breadcrumbs class="border-e" :items="breadcrumbs"></v-breadcrumbs>
+      <v-btn
+          v-for="social in socials"
+          :icon="social.icon"
+          :href="social.url"
+          variant="text"
+          density="compact"
+          target="_blank"
+          v-tooltip="social.name"
+      ></v-btn>
+    </Flex>
   </Flex>
 </template>

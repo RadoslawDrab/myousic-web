@@ -20,6 +20,7 @@ declare module 'vue-router' {
         icon?: string
         includeInNav?: boolean
         order?: number
+        class?: string | string[]
     }
 }
 

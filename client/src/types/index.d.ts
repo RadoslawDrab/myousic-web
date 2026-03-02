@@ -47,4 +47,10 @@ declare global {
         description?: string
         fileContent?: string
     }>
+
+    export type Social = {
+        name: string
+        url: string
+        icon: string
+    }
 }
