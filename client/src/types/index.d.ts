@@ -45,7 +45,7 @@ declare global {
         file: string
         tags?: string[]
         description?: string
-        fileContent?: string
+        path?: string
     }>
 
     export type Social = {

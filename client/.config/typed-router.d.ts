@@ -30,11 +30,18 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
-    '/docs': RouteRecordInfo<
-      '/docs',
+    '/docs/': RouteRecordInfo<
+      '/docs/',
       '/docs',
       Record<never, never>,
       Record<never, never>,
+      | never
+    >,
+    '/docs/[...doc]': RouteRecordInfo<
+      '/docs/[...doc]',
+      '/docs/:doc(.*)',
+      { doc: ParamValue<true> },
+      { doc: ParamValue<false> },
       | never
     >,
     '/download': RouteRecordInfo<
@@ -77,9 +84,15 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
-    'src/views/docs.vue': {
+    'src/views/docs/index.vue': {
       routes:
-        | '/docs'
+        | '/docs/'
+      views:
+        | never
+    }
+    'src/views/docs/[...doc].vue': {
+      routes:
+        | '/docs/[...doc]'
       views:
         | never
     }

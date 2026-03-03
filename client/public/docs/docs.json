@@ -1,27 +1,37 @@
 [
   {
+	"icon": "mdi-bullhorn",
 	"title": "Introduction",
-  	"file": "01-introduction.md"
+  	"file": "01-introduction.md",
+	"path": "introduction"
   },
   {
+	"icon": "mdi-sitemap",
 	"title": "Workflow",
-	"file": "02-workflow.md"
+	"file": "02-workflow.md",
+	"path": "workflow"
   },
   {
 	"title": "Settings",
 	"children": [
 	  {
+		"icon": "mdi-cog",
 		"title": "General",
-		"file": "settings/01-general.md"
+		"file": "settings/01-general.md",
+		"path": "settings/general"
 	  },
 	  {
+		"icon": "mdi-variable",
 		"title": "Variables",
-		"file": "settings/02-variables.md"
+		"file": "settings/02-variables.md",
+		"path": "settings/variables"
 	  }
 	]
   },
   {
+	"icon": "mdi-alert-circle-outline",
 	"title": "Troubleshooting",
-	"file": "04-troubleshooting.md"
+	"file": "04-troubleshooting.md",
+	"path": "troubleshooting"
   }
 ]
