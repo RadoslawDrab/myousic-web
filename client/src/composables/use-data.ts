@@ -21,7 +21,7 @@ const useData = () => {
     const local = useStorage<LocalData>(
         import.meta.env.VITE_APP_NAME.toUpperCase() + '_SETTINGS',
         {
-            lyricsProviders: ['AzLyrics', 'Genius'],
+            lyricsProviders: ['AzLyrics', 'Genius', 'LyricsOvh', 'Lyrist'],
             artworkSize: 500,
             includedGenres: [],
             excludedGenres: [],

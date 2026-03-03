@@ -59,8 +59,6 @@ def api():
 		with ydl:
 			# POST
 			if request.method == 'POST':
-				print(postprocessors_args)
-				# raise Status(500, 'Error')
 				body: dict[str, any] = json.loads(request.form.get('body', '{}'))
 
 				url: str = body.get('url')

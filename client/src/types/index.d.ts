@@ -23,7 +23,7 @@ declare global {
         result?: API_SearchUrlResult
     }
 
-    export type LyricsProvider = 'AzLyrics' | 'Genius'
+    export type LyricsProvider = 'AzLyrics' | 'Genius' | 'LyricsOvh' | 'Lyrist'
     export type LocalData = {
         lyricsProviders: LyricsProvider[]
         artworkSize: number
