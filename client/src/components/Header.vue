@@ -20,8 +20,8 @@
               return {
                 icon: route.meta.icon || '',
                 title: route.meta.title || 'Link',
-                path: route.path || '/',
-                class: Array.isArray(route.meta.class) ? route.meta.class : [route.meta.class]
+                path: route.meta.path || route.path || '/',
+                class: Array.isArray(route.meta.class) ? route.meta.class : [route.meta.class],
               }
             })
   )

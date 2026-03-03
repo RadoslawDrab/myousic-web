@@ -4,24 +4,10 @@ import { formatTitle } from '@/utils/string'
 const route = useRoute()
 const title = useTitle()
 
-const lastPath = ref<string>('/')
-const isDocsRoute = computed(() => route.path.startsWith('/docs'))
-const name = computed(() => import.meta.env.VITE_APP_NAME)
-
-const breadcrumbs = computed<string[]>(() => {
-  return route.matched.filter(v => v.meta.title || v.name).map(v => (v.meta.title || v.name) as string)
+watch(() => route.meta.title, (_title) => {
+  if (!_title) return
+  title.value = formatTitle(_title)
 })
-
-watch(() => route.path, (path) => {
-  if (isDocsRoute.value) return
-
-  lastPath.value = path
-}, { immediate: true })
-
-watch(() => route.meta, (meta) => {
-  if (!meta.title) return
-  title.value = formatTitle(meta.title)
-}, { deep: true })
 
 </script>
 

@@ -21,6 +21,7 @@ declare module 'vue-router' {
         includeInNav?: boolean
         order?: number
         class?: string | string[]
+        path?: string,
     }
 }
 

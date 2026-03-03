@@ -14,7 +14,7 @@ const useCache = (urlRef: Ref<string | null>, options?: { name?: string, init?: 
 
             if (cachedResponse && !force) {
                 data.value = await cachedResponse.text()
-                if (!options?.staleWhileRevalidate) return
+                if (options?.staleWhileRevalidate ?? true) return
             }
 
             // Background Network Fetch (Stale-While-Revalidate)
@@ -39,17 +39,33 @@ const useCache = (urlRef: Ref<string | null>, options?: { name?: string, init?: 
         }
     }
 
+    async function getCache(callback: (text: string, request: Request) => boolean, loopAll: boolean = false) {
+        const cache = await caches.open(cacheName)
+
+
+        for (const req of await cache.keys()) {
+            const resp = await fetch(req.url)
+
+            if (!resp.ok) continue
+
+            if (callback(await resp.text(), req) && !loopAll) return
+        }
+    }
+
     // Automatically trigger when the URL changes
-    watch(urlRef, (newUrl) => {
-        if (newUrl) execute(newUrl)
+    watch(urlRef, (urlData) => {
+        if (!urlData) return
+        execute(urlData)
     }, { immediate: true })
 
     return {
         data,
         isLoading,
         error,
+        getCache,
         refresh: (init?: RequestInit, force: boolean = true) => urlRef.value && execute(urlRef.value, init, force)
     }
 }
 
+export type CacheReturn = ReturnType<typeof useCache>
 export default useCache
