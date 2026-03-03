@@ -21,8 +21,6 @@ declare module 'vue' {
     Header: typeof import('./../src/components/Header.vue')['default']
     HeadersCheckbox: typeof import('./../src/components/utils/HeadersCheckbox.vue')['default']
     HeadersFilter: typeof import('./../src/components/utils/HeadersFilter.vue')['default']
-    Index: typeof import('@/views/index.vue')['default']
-    Item: typeof import('@/views/track/[item].vue')['default']
     Json: typeof import('./../src/components/utils/Json.vue')['default']
     ListGroup: typeof import('./../src/components/utils/ListGroup.vue')['default']
     ListSorting: typeof import('./../src/components/utils/ListSorting.vue')['default']
@@ -32,7 +30,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchBar: typeof import('./../src/components/SearchBar.vue')['default']
-    SettingsDial: typeof import('./../src/components/SettingsDial.vue')['default']
     StatusHandler: typeof import('./../src/components/utils/StatusHandler.vue')['default']
     UrlDataSearch: typeof import('./../src/components/UrlDataSearch.vue')['default']
   }

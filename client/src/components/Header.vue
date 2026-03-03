@@ -4,7 +4,7 @@
 
   const route = useRoute()
   const router = useRouter()
-  const cache = useCache(computed(() => '/social.json'))
+  const cache = useCache(computed(() => '/data/social.json'))
 
   const breadcrumbs = computed<string[]>(() => {
     return route.matched.filter(v => v.meta.title || v.name).map(v => (v.meta.title || v.name) as string)
