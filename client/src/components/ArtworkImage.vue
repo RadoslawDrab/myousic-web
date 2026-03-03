@@ -3,8 +3,9 @@
 import { getArtworkUrl } from '@/utils/api'
 
 const props = withDefaults(defineProps<{
-  url: string
+  url?: string
   src?: string
+  placeholder?: string
   maxWidth?: number | string
   minWidth?: number | string
   smallClass?: string
@@ -13,8 +14,14 @@ const props = withDefaults(defineProps<{
   largeRenderSize?: number
 }>(), {
   smallRenderSize: 250,
-  largeRenderSize: 1000
+  largeRenderSize: 1000,
+  placeholder: 'https://images.placeholders.dev/?width=300&height=300&text=No Image'
 })
+
+const src = computed(() => ({
+  small: props.src || getArtworkUrl(props.url, props.smallRenderSize) || props.placeholder,
+  large: props.src || getArtworkUrl(props.url, props.largeRenderSize) || props.placeholder
+}))
 
 function getSize(size: string | number, defaultValue: string = 'auto') {
   if (typeof size === 'number') return size + 'px'
@@ -30,10 +37,17 @@ function getSize(size: string | number, defaultValue: string = 'auto') {
           class="cursor-pointer w-100"
           :class="props.smallClass"
           :style="{ 'max-width': getSize(props.maxWidth), 'min-width': getSize(props.minWidth) }"
-          :src="props.src || getArtworkUrl(props.url, props.smallRenderSize)"
+          :lazy-src="props.placeholder"
+          :src="src.small"
           v-bind="internalProps"
       />
     </template>
-    <v-img v-if="props.url" :class="props.largeClass" style="height: 80vh;" :src="props.src || getArtworkUrl(props.url, props.largeRenderSize)"></v-img>
+    <v-img
+        v-if="props.url"
+        :class="props.largeClass"
+        style="height: 80vh;"
+        :lazy-src="props.placeholder"
+        :src="src.large"
+    ></v-img>
   </v-dialog>
 </template>

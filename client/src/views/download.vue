@@ -109,7 +109,7 @@
         </Flex>
       </Flex>
       <Flex column align="center" justify="center">
-        <ArtworkImage :min-width="br.isGreater('sm') ? 400 : 200" :max-width="500" :url="artworkUrl" :small-render-size="500" :large-render-size="1000" />
+        <ArtworkImage :min-width="br.isGreater('sm') ? 400 : 200" :max-width="500" :url="artworkUrl || 'https://images.placeholders.dev/?width=300&height=300&text=No Image'" :small-render-size="500" :large-render-size="1000" />
       </Flex>
     </Flex>
     <v-divider class="my-2" />
