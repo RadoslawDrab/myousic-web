@@ -39,7 +39,7 @@ const useApi = () => {
             artworkSize: local.value.artworkSize,
             ...local.value.audio
         }
-        if (_track.clipping || options.clipping) {
+        if (_track?.clipping || options?.clipping) {
             query['clipping'] = _track.clipping ? _track.clipping : options.clipping
         }
 

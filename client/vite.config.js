@@ -7,40 +7,44 @@ import Components from 'unplugin-vue-components/vite'
 import VueRouter from 'unplugin-vue-router/vite'
 
 export default defineConfig(({ mode }) => {
-  const DEV = mode === 'development'
-  return {
-      server: {
-          port: 3000
-      },
-    plugins: [
-        Components({
-            dts: '.config/components.d.ts'
-        }),
-        AutoImport({
-            imports: [
-                'vue',
-                'vue-router',
-                '@vueuse/core'
-            ],
-            dts: '.config/import.d.ts'
-        }),
-        VueRouter({
-            routesFolder: [
-                'src/views',
-            ],
-            extensions: ['.vue', '.md'],
-            dts: './.config/typed-router.d.ts'
-        }),
-        vue({
-            include: [/\.vue$/]
-        }),
-        vueDevTools(),
-    ],
-      resolve: {
-          alias: {
-              '@': fileURLToPath(new URL('./src', import.meta.url)),
-              '@public': fileURLToPath(new URL('./public', import.meta.url))
-          }
-      }
-  }
+    const DEV = mode === 'development'
+    return {
+        envDir: '../',
+        server: {
+            port: 3000
+        },
+        build: {
+            outDir: './dist',
+        },
+        plugins: [
+            Components({
+                dts: '.config/components.d.ts'
+            }),
+            AutoImport({
+                imports: [
+                    'vue',
+                    'vue-router',
+                    '@vueuse/core'
+                ],
+                dts: '.config/import.d.ts'
+            }),
+            VueRouter({
+                routesFolder: [
+                    'src/views',
+                ],
+                extensions: ['.vue', '.md'],
+                dts: './.config/typed-router.d.ts'
+            }),
+            vue({
+                include: [/\.vue$/]
+            }),
+            vueDevTools(),
+        ],
+        resolve: {
+            alias: {
+                '@': fileURLToPath(new URL('./src', import.meta.url)),
+                '@public': fileURLToPath(new URL('./public', import.meta.url))
+            }
+        }
+    }
 })
