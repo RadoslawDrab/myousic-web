@@ -1,5 +1,3 @@
-.tmp/
-.preview/
 dist/
 build/
 .env*
