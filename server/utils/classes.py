@@ -126,3 +126,8 @@ class EnumMeta(type):
 		return super().__new__(mcs, name, bases, new_attrs)
 	def __getitem__(self, item):
 		return getattr(self, item)
+
+class Obj:
+	@staticmethod
+	def get_attributes(obj: object) -> list[str]:
+		return [attr for attr in dir(obj) if not callable(getattr(obj, attr)) and not attr.startswith("__") and not attr.startswith('_')]

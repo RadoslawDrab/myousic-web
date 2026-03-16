@@ -85,13 +85,13 @@ class Logger(Singleton):
 		self.logs: list[dict[str, any]] = self._read()
 	def _write(self, content: str) -> None:
 		"""Appends content to the log file."""
-		with open(self._path, 'a' if self._path.exists() else 'w') as f:
+		with open(self._path, 'a' if self._path.exists() else 'w', encoding='utf-8') as f:
 			f.write(content)
 	def _read(self) -> list:
 		"""Reads the content of the log file."""
 		if not self._path.exists():
 			raise FileNotFoundError(f"File '{self._path}' not found")
-		with open(self._path, 'r') as f:
+		with open(self._path, 'r', encoding='utf-8', errors='replace') as f:
 			content = f.read()
 
 			return [l for l in content.split('\n') if not l.startswith(self._header_wrappers) and l]

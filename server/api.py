@@ -8,16 +8,14 @@ from pathlib import Path
 from flask import request, send_from_directory
 
 from providers import find_lyrics_provider
-from utils import Status, get_args, get_env
+from utils import Status, get_args
 from yt_dlp import YoutubeDL
 
+from utils.args import Args
 from utils.conversion import validate_sample_rate
 from utils.logger import Logger
 from utils.track import get_track
 from utils.track_data import Genre, Lyrics
-
-output_path = Path(get_env('OUTPUT_PATH', default='./audio'))
-temp_path = Path(get_env('TEMP_PATH', default='./temp'))
 
 def api():
 	try:
@@ -51,8 +49,8 @@ def api():
 			}],
 			'postprocessor_args': postprocessors_args,
 			'paths': {
-				'home': str(output_path),
-				'temp': str(temp_path)
+				'home': str(Args.output_path),
+				'temp': str(Args.temp_path)
 			}
 		})
 
@@ -71,12 +69,14 @@ def api():
 				audio, target_file_path = get_track(
 					ydl,
 					url,
-					output_path.joinpath(file_name),
+					Args.output_path.joinpath(file_name),
 					track,
 					artwork_size=int(request.args.get('artworkSize', 1000)),
 					artwork_file=request.files.get('artworkFile')
 				)
 				audio.save()
+
+				Logger.log(f'Audio "{target_file_path.name}" saved to "{target_file_path.parent.as_posix()}"', log_type='DEBUG', print_only=Args.dev)
 
 				return {
 					'fileName': target_file_path.name,
@@ -111,6 +111,7 @@ def api():
 				duration += int(duration_times.get('minutes', 0) or 0) * 60 * 1000
 				duration += int(duration_times.get('seconds', 0) or 0) * 1000
 
+			Logger.log(f'Audio data retrieved [{artist} - {extracted.strip()}]', log_type='DEBUG', print_only=Args.dev)
 
 			return {
 				'id': uuid.uuid4(),
@@ -152,7 +153,9 @@ def data(artist: str, title: str):
 
 	genres, genres_url = genres_provider.get(artist, title)
 
+	Logger.log(f'Genres and lyrics retrieved [{artist} - {title}]', log_type='DEBUG', print_only=Args.dev)
+
 	return { 'lyrics':  lyrics, 'lyricsUrl': lyrics_url, 'genres': [*genres], 'genresUrl': genres_url }
 
 def downloads(path: str):
-	return send_from_directory(output_path, path, as_attachment=True)
+	return send_from_directory(Args.output_path, path, as_attachment=True)
