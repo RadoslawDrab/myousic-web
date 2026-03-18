@@ -12,16 +12,18 @@
 
   const socials = ref<Social[]>([])
 
-  const links = computed<{ icon: string, path: string, title: string, class?: string[] }[]>(() =>
+  const links = computed<{ icon: string, path: string, title: string, class?: string[], active?: boolean }[]>(() =>
       router.getRoutes()
             .filter(route => route.meta.includeInNav)
             .sort((r1, r2) => (r1.meta.order ?? 0) - (r2.meta.order ?? 0))
-            .map(route => {
+            .map(r => {
+              const path = r.meta.path || r.path || '/'
               return {
-                icon: route.meta.icon || '',
-                title: route.meta.title || 'Link',
-                path: route.meta.path || route.path || '/',
-                class: Array.isArray(route.meta.class) ? route.meta.class : [route.meta.class],
+                icon: r.meta.icon || '',
+                title: r.meta.title || 'Link',
+                path,
+                class: Array.isArray(r.meta.class) ? r.meta.class : [r.meta.class],
+                active: r.meta.activeRegEx ? new RegExp(r.meta.activeRegEx).test(route.path) : undefined
               }
             })
   )
@@ -46,6 +48,7 @@
           :prepend-icon="link.icon"
           variant="plain"
           active-color="primary"
+          :active="link.active"
           flat
       >
         {{ link.title }}

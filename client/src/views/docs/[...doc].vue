@@ -88,7 +88,12 @@ onMounted(async () => {
 
 definePage({
   meta: {
-    title: 'Doc'
+    title: 'Docs',
+    icon: 'mdi-file-document',
+    path: '/docs/introduction',
+    activeRegEx: /\/docs.*/,
+    includeInNav: true,
+    order: 100
   }
 })
 </script>

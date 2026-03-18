@@ -1,0 +1,13 @@
+.preview/
+.tmp/
+.venv/
+dist/
+data/
+build/
+node_modules/
+__pycache__
+!package.json
+Dockerfile*
+
+.DS_Store
+Thumbs.db
