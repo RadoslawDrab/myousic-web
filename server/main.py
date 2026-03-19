@@ -1,4 +1,3 @@
-import sys
 from pathlib import Path
 
 from flask import Flask, send_from_directory
@@ -17,7 +16,7 @@ Args()
 Args.output_path.mkdir(exist_ok=True, parents=True)
 
 app = Flask(__name__, static_folder=Args.app_path)
-CORS(app)
+CORS(app, origins=["*" if Args.dev else f"http://{Args.host}:{Args.port}"])
 
 @app.errorhandler(Status)
 def _(error):
@@ -25,7 +24,7 @@ def _(error):
 
 app.route("/api", methods=["GET", "POST"])(api)
 app.route("/api/<string:artist>/<string:title>", methods=["GET"])(data)
-app.route("/audio/<path:path>", methods=["GET"])(downloads)
+app.route("/api/audio/<path:path>", methods=["GET"])(downloads)
 
 @app.route('/', defaults={ 'path': '' })
 @app.route('/<path:path>')

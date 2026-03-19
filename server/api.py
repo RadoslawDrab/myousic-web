@@ -76,11 +76,11 @@ def api():
 				)
 				audio.save()
 
-				Logger.log(f'Audio "{target_file_path.name}" saved to "{target_file_path.parent.as_posix()}"', log_type='DEBUG', print_only=Args.dev)
+				Logger.log(f'Audio "{target_file_path.name}" saved to "{Path.cwd().joinpath(target_file_path.parent).as_posix()}"', log_type='DEBUG', print_only=Args.dev)
 
 				return {
 					'fileName': target_file_path.name,
-					'downloadUrl': request.root_url + str(target_file_path.as_posix())
+					'downloadUrl': '/audio/' + str(target_file_path.name)
 				}
 
 			# GET
