@@ -80,7 +80,7 @@ def api():
 
 				return {
 					'fileName': target_file_path.name,
-					'downloadUrl': '/audio/' + str(target_file_path.name)
+					'downloadUrl': request.host_url + 'api/audio/' + str(target_file_path.name)
 				}
 
 			# GET
@@ -93,8 +93,9 @@ def api():
 			title = info.get('title') or info.get('fulltitle')
 			artist = info.get('artist') or info.get('uploader')
 
-			extracted = re.sub(r'\(official.+video\)', '', title, flags=re.IGNORECASE)
-			extracted = re.sub(f'{artist.lower()} *- *', '', extracted, flags=re.IGNORECASE)
+			extracted_title = re.sub(r'\(official.+video\)', '', title, flags=re.IGNORECASE)
+			extracted_title = re.sub(f'{artist.lower()} *- *', '', extracted_title, flags=re.IGNORECASE)
+			extracted_title = extracted_title.strip()
 
 			upload_date = re.search(r'(?P<year>\d{4})(?P<month>\d{2})(?P<day>\d{2})', info.get('upload_date', ''))
 			upload_date = upload_date.groupdict() if upload_date else {}
@@ -111,12 +112,12 @@ def api():
 				duration += int(duration_times.get('minutes', 0) or 0) * 60 * 1000
 				duration += int(duration_times.get('seconds', 0) or 0) * 1000
 
-			Logger.log(f'Audio data retrieved [{artist} - {extracted.strip()}]', log_type='DEBUG', print_only=Args.dev)
+			Logger.log(f'Audio data retrieved [{artist} - {extracted_title}]', log_type='DEBUG', print_only=Args.dev)
 
 			return {
 				'id': uuid.uuid4(),
 				'fullTitle': title,
-				'title': extracted.strip(),
+				'title': extracted_title,
 				'artist': artist,
 				'url': url,
 				'artworkUrl': info.get('thumbnail'),

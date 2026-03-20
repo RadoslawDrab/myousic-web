@@ -59,7 +59,7 @@ const useApi = () => {
             query: query
         })
 
-        download(fileName, import.meta.env.VITE_API_URL.replace(/\/+$/, '') + downloadUrl)
+        download(fileName, downloadUrl)
     }
     function renderComment(url: string, track: SearchAPI_TrackResult | Partial<ExtendedTrack>, options?: ExtraOptions, renderError: boolean = false): string {
         const _track = { ...track, ...(options || {})}

@@ -10,6 +10,15 @@ export default defineConfig(({ mode }) => {
     const DEV = mode === 'development'
     return {
         envDir: DEV ? '../' : './',
+        preview: {
+            port: 4000,
+            proxy: {
+                '/api': {
+                    target: 'http://localhost:5000',
+                    changeOrigin: true,
+                }
+            }
+        },
         server: {
             port: 3000
         },
