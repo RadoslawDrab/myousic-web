@@ -1,13 +1,20 @@
-.preview/
-.tmp/
-.venv/
-dist/
-data/
-build/
-node_modules/
-__pycache__
-!package.json
-Dockerfile*
+**/.preview/
+**/.tmp/
+**/.venv/
+**/node_modules/
+**/__pycache__/
+**/.idea/
+.gitignore
 
+# Build
+**/dist
+**/data
+**/build
+
+# Docker
+Dockerfile*
+.dockerignore
+
+# OS Junk
 .DS_Store
 Thumbs.db

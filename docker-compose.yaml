@@ -1,0 +1,10 @@
+services:
+  myousic:
+    image: radziogadzio/myousic:latest
+    container_name: myousic
+    ports:
+      - "8080:80"
+    volumes:
+      # Path to generated audio
+      - ./audio:/app/audio
+      - ./logs:/var/log
