@@ -22,7 +22,7 @@ class Args(Singleton):
 
 		parser.add_argument('--dev', help='Mark as development', action='store_true', default=self.dev)
 		parser.add_argument('--preview', help='Mark as preview', action='store_true', default=self.preview)
-		parser.add_argument('--prod', help='Mark as production', action='store_false', dest='dev', default=self.dev)
+		parser.add_argument('--prod', help='Mark as production', action='store_false', dest='dev', default=not self.dev)
 		parser.add_argument('--port', '-p', help='Server port', type=int, default=self.port)
 		parser.add_argument('--host', help='Server host', type=str, default=self.host)
 		parser.add_argument('--output-path', '-o', help='Audio folder', type=Path, default=self.output_path)
