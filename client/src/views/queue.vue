@@ -90,7 +90,7 @@
       </v-toolbar>
     </template>
     <template #item.actions="{ item }">
-      <v-btn-group>
+      <v-btn-group density="compact">
         <v-btn icon="mdi-download" variant="flat" :href="item.data.downloadUrl" :disabled="!item.data.downloadUrl && item.finished" v-tooltip="'Download'"></v-btn>
         <v-btn icon="mdi-link" variant="flat" :href="item.data.url" :disabled="!item.data.url" target="_blank" v-tooltip="'View URL'"></v-btn>
         <v-btn icon="mdi-code-json" @click="currentItem = item" v-tooltip="'View JSON'"></v-btn>
@@ -100,7 +100,7 @@
       <ArtworkImage :url="value" :small-render-size="400" :large-render-size="1000" />
     </template>
     <template #item.data.track.clipping="{ value }">
-      <span v-if="value" class="text-grey-darken-1">
+      <span v-if="value" class="text-grey">
         {{ getTime(value[0], true) }} - {{ getTime(value[1], true) }}
       </span>
     </template>
@@ -108,16 +108,16 @@
       <v-icon :icon="value ? 'mdi-check' : 'mdi-close'"></v-icon>
     </template>
     <template #item.status="{ value }">
-      <v-chip :color="value === 'completed' ? 'success' : value === 'failed' ? 'error': 'warning'">{{ value }}</v-chip>
+      <v-chip :color="value === 'completed' ? 'success' : value === 'failed' ? 'error': 'warning'" @click="queryStatus = value">{{ value }}</v-chip>
     </template>
     <template #item.createdAt="{ value }">
-      <span v-if="value" class="text-grey-darken-1">{{ new Date(value).toLocaleString() }}</span>
+      <span v-if="value" class="text-grey">{{ new Date(value).toLocaleString() }}</span>
     </template>
     <template #item.updatedAt="{ value }">
-      <span v-if="value" class="text-grey-darken-1">{{ new Date(value).toLocaleString() }}</span>
+      <span v-if="value" class="text-grey">{{ new Date(value).toLocaleString() }}</span>
     </template>
     <template #item.availableTo="{ value }">
-      <span v-if="value" class="text-grey-darken-1">{{ new Date(value).toLocaleString() }}</span>
+      <span v-if="value" class="text-grey">{{ new Date(value).toLocaleString() }}</span>
     </template>
   </v-data-table>
   <v-dialog v-model="currentItem" max-width="800">
