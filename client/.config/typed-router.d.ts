@@ -44,6 +44,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/queue': RouteRecordInfo<
+      '/queue',
+      '/queue',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/settings': RouteRecordInfo<
       '/settings',
       '/settings',
@@ -86,6 +93,12 @@ declare module 'vue-router/auto-routes' {
     'src/views/download.vue': {
       routes:
         | '/download'
+      views:
+        | never
+    }
+    'src/views/queue.vue': {
+      routes:
+        | '/queue'
       views:
         | never
     }

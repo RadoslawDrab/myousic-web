@@ -7,8 +7,8 @@ export function download(fileName: string, blobOrUrl: string | Blob) {
     URL.revokeObjectURL(link.href)
 }
 
-export function getTime(time: number) {
+export function getTime(time: number, milliseconds: boolean = false) {
     const date = new Date(time)
 
-    return date.getMinutes().toString().padStart(2, '0') + ':' + date.getSeconds().toString().padStart(2, '0')
+    return date.getMinutes().toString().padStart(2, '0') + ':' + date.getSeconds().toString().padStart(2, '0') + (milliseconds ? ':' + date.getMilliseconds().toString().padStart(3, '0') : '')
 }
