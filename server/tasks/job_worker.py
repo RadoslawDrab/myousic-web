@@ -23,7 +23,6 @@ def job_worker(**kwargs):
 	url = data.get('url', '')
 	track = data.get('track', {})
 	artwork_size = int(args.get('artworkSize', 1000))
-	artwork_path = args.get('artworkFile')
 
 	JobManager.update(job_id, 'pending')
 
@@ -37,8 +36,7 @@ def job_worker(**kwargs):
 				url,
 				download_folder.joinpath(file_name),
 				track,
-				artwork_size=artwork_size,
-				artwork_file=artwork_path
+				artwork_size=artwork_size
 			)
 			audio.save()
 
@@ -51,6 +49,6 @@ def job_worker(**kwargs):
 			)
 	except Exception as e:
 		JobManager.update(job_id, 'failed', error=str(e))
-		Logger.log(f'Audio failed to save: "{e}"', log_type='ERROR', print_only=Args.dev)
+		Logger.log(f'Audio failed to save. Error: "{e}"', log_type='ERROR', print_only=Args.dev)
 	finally:
 		download_queue.task_done()
