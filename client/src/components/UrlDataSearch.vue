@@ -19,6 +19,7 @@
     session.value.result = null
     await nextTick()
     const response = await get<API_SearchUrlResult>(null, {
+      path: ['yt-data'],
       query: {
         url: session.value.url
       }

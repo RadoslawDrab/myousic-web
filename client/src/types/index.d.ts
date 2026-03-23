@@ -53,4 +53,17 @@ declare global {
         url: string
         icon: string
     }
+
+    export type QueueItem = {
+        status: 'completed' | 'pending' | 'failed',
+        id: string,
+        finished: boolean,
+        createdAt: number,
+        updatedAt: number,
+        data: {
+            downloadUrl?: string,
+            url: string,
+            track: Partial<ExtendedTrack>
+        }
+    }
 }
