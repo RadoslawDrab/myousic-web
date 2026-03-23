@@ -39,14 +39,17 @@ Logger(
 	Args.log_path,
 	default_log_type='DEBUG',
 	error_log_type='ERROR',
-	logger_format=LoggerFormat(show_traceback=True)
+	logger_format=LoggerFormat(show_traceback=True),
+	print_only=Args.dev,
+	min_log_level=Args.log_level
 )
 
 def init():
-	TasksHandler.set_kwargs(app=app, output_path=Args.output_path, temp_path=Args.temp_path)
+	TasksHandler.set_kwargs(app=app)
 	TasksHandler.start()
 
 	Logger.log(f'MODE: { "development" if Args.dev and not Args.preview else ("preview" if Args.preview else "production") }', log_type='DEBUG')
+	Logger.log(f'Min log type "{Args.log_level}"', log_type='DEBUG', print_message=True)
 
 	if not Args.dev or Args.preview:
 		Logger.log(f'Server started on http://{Args.host}:{Args.port}', log_type='INFO')

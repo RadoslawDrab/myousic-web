@@ -24,7 +24,7 @@ def get_track(
 	ydl.extract_info(url, download=True)
 
 	if not file_path.exists():
-		raise Status('File not found', 404)
+		raise FileNotFoundError(f'File "{file_path}" not found')
 
 
 	target_file_path = file_path.parent.joinpath(sanitize_filename(f'{track.get('artistName', 'NONE')} - {track.get('trackName', 'NONE')}') + file_path.suffix)
