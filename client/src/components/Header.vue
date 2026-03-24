@@ -1,16 +1,15 @@
 <script setup lang="ts">
-  import useCache from '@/composables/use-cache'
+  import useSocials from '@/composables/use-socials'
   import { joinClass } from '@/utils/string'
 
   const route = useRoute()
   const router = useRouter()
-  const cache = useCache(computed(() => '/data/social.json'))
 
   const breadcrumbs = computed<string[]>(() => {
     return route.matched.filter(v => v.meta.title || v.name).map(v => (v.meta.title || v.name) as string)
   })
 
-  const socials = ref<Social[]>([])
+  const socials = useSocials()
 
   const links = computed<{ icon: string, path: string, title: string, class?: string[], active?: boolean }[]>(() =>
       router.getRoutes()
@@ -27,14 +26,6 @@
               }
             })
   )
-
-  watch(cache.data, (data) => {
-    try {
-      socials.value = JSON.parse(data)
-    } catch (e) {
-      console.error(e)
-    }
-  })
 
 </script>
 
