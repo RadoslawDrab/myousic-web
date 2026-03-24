@@ -24,6 +24,7 @@ export default defineConfig(({ mode }) => {
         },
         build: {
             outDir: './dist',
+            copyPublicDir: true
         },
         plugins: [
             Components({
