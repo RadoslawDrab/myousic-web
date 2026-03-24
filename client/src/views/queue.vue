@@ -1,12 +1,14 @@
 <script setup lang="ts">
   import useApi from '@/composables/use-api'
+  import useFetch from '@/composables/use-fetch'
   import useStatus from '@/composables/use-status'
   import { getTime } from '@/utils'
   import { useRouteQuery } from '@vueuse/router'
 
-  const { getQueueStatus } = useApi()
+  const { getQueueStatus, downloadTrack } = useApi()
   const status = useStatus()
   const queryStatus = useRouteQuery<'all' | 'completed' | 'pending' | 'failed'>('status', 'all')
+  const { delete: _deleteJob } = useFetch({ path: ['queue']})
 
   const items = ref<QueueItem[]>([])
   const currentItem = ref<QueueItem | null>(null)
@@ -14,12 +16,13 @@
   const isLoading = ref<boolean>(false)
 
   const allHeaders = ref<DataTableHeader[]>([
-    { key: 'data.track.artworkUrl100', title: 'Artwork' },
+    { key: 'data.artworkUrl', title: 'Artwork' },
     { key: 'data.track.artistName', title: 'Artist Name' },
     { key: 'data.track.trackName', title: 'Track Name' },
     { key: 'data.track.collectionName', title: 'Album', defaultShow: false },
     { key: 'data.track.clipping', title: 'Clipping', defaultShow: false },
     { key: 'status', title: 'Status', removable: false },
+    { key: 'data.error', title: 'Error', defaultShow: false },
     { key: 'finished', title: 'Finished' },
     { key: 'createdAt', title: 'Created At' },
     { key: 'availableTo', title: 'Available To' },
@@ -49,6 +52,18 @@
     })
   })
 
+  async function deleteJob(id: string) {
+    isLoading.value = true
+    try {
+      await _deleteJob(null, { query: { id }})
+      await refresh()
+      status.add({ type: 'success', title: 'Job deleted', closable: true })
+    } catch (e) {
+      status.add({ type: 'error', title: e.toString() })
+    } finally {
+      isLoading.value = false
+    }
+  }
   async function refresh() {
     isLoading.value = true
     try {
@@ -90,13 +105,15 @@
       </v-toolbar>
     </template>
     <template #item.actions="{ item }">
-      <v-btn-group density="compact">
+      <v-btn-group density="comfortable">
         <v-btn icon="mdi-download" variant="flat" :href="item.data.downloadUrl" :disabled="!item.data.downloadUrl && item.finished" v-tooltip="'Download'"></v-btn>
+        <v-btn icon="mdi-restart" @click="downloadTrack(item.data.url, item.data.track).then(() =>refresh())" v-tooltip="'Restart'"></v-btn>
         <v-btn icon="mdi-link" variant="flat" :href="item.data.url" :disabled="!item.data.url" target="_blank" v-tooltip="'View URL'"></v-btn>
         <v-btn icon="mdi-code-json" @click="currentItem = item" v-tooltip="'View JSON'"></v-btn>
+        <v-btn icon="mdi-close" @click="deleteJob(item.id)" v-tooltip="'Delete job'"></v-btn>
       </v-btn-group>
     </template>
-    <template #item.data.track.artworkUrl100="{ value }">
+    <template #item.data.artworkUrl="{ value }">
       <ArtworkImage :url="value" :small-render-size="400" :large-render-size="1000" />
     </template>
     <template #item.data.track.clipping="{ value }">
@@ -118,6 +135,9 @@
     </template>
     <template #item.availableTo="{ value }">
       <span v-if="value" class="text-grey">{{ new Date(value).toLocaleString() }}</span>
+    </template>
+    <template #item.data.error="{ value }">
+      <code v-if="value" class="text-red-darken-2">{{ value }}</code>
     </template>
   </v-data-table>
   <v-dialog v-model="currentItem" max-width="800">

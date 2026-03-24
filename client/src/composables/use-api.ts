@@ -105,7 +105,7 @@ const useApi = () => {
     }
     async function getQueueStatus() {
         return await get<QueueItem[]>(null, {
-            path: ['status']
+            path: ['queue']
         })
     }
 

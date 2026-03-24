@@ -55,7 +55,7 @@
       </v-btn>
     </Flex>
     <Flex align="center">
-      <v-breadcrumbs class="border-e" :items="breadcrumbs"></v-breadcrumbs>
+      <v-breadcrumbs :class="socials.length > 0 ? 'border-e' : ''" :items="breadcrumbs"></v-breadcrumbs>
       <v-btn
           v-for="social in socials"
           :icon="social.icon"
