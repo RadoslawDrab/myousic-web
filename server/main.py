@@ -17,15 +17,13 @@ app = Flask(__name__, static_folder=Args.app_path)
 
 CORS(app, origins=["*" if Args.dev else f"http://{Args.host}:{Args.port}"])
 
-
 @app.errorhandler(Status)
-def _(error):
+def error_handler(error):
 	return { 'message': error.message, 'code': error.code, 'timestamp': error.timestamp, **error.kwargs }, error.code
 
 app.register_blueprint(api, url_prefix="/api")
 app.register_blueprint(base, url_prefix="/")
 
-# Configure logging
 Logger(
 	Args.log_path,
 	default_log_type='DEBUG',
