@@ -10,7 +10,6 @@ class Args(Singleton):
 	dev: bool = not PREVIEW
 	preview: bool = PREVIEW
 	output_path: Path = get_env('SERVER_OUTPUT_PATH', default='./.preview/audio/' if PREVIEW else './audio', type=Path)
-	db_path: Path = get_env('SERVER_DB_PATH', default='./.preview' if PREVIEW else './', type=Path)
 	log_path: Path = get_env('SERVER_LOG_PATH', default='./.preview/file.log' if PREVIEW else './.tmp/file.log', type=Path)
 	log_level: str = get_env('SERVER_LOG_LEVEL', default='INFO' if PREVIEW else 'DEBUG')
 	port: int = 3001
@@ -28,7 +27,6 @@ class Args(Singleton):
 		parser.add_argument('--port', '-p', help='Server port', type=int, default=self.port)
 		parser.add_argument('--host', help='Server host', type=str, default=self.host)
 		parser.add_argument('--output-path', '-o', help='Audio download folder', type=Path, default=self.output_path)
-		parser.add_argument('--db-path', help='Audio DB folder', type=Path, default=self.db_path)
 		parser.add_argument('--log-path', help='Log file path', type=Path, default=self.log_path)
 		parser.add_argument('--log-level', help='Log level. Available [\'DEBUG\', \'INFO\', \'WARNING\', \'ERROR\']', default=self.log_level, choices=['DEBUG', 'INFO',' WARNING', 'ERROR'])
 		parser.add_argument('--app-path', help='Client app folder path', type=Path, default=self.app_path)

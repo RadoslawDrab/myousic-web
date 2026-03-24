@@ -1,5 +1,5 @@
-import datetime
 import queue
+import traceback
 from pathlib import Path
 
 from tasks.job_manager import JobManager
@@ -31,7 +31,7 @@ def job_worker(**kwargs):
 		download_folder = Args.output_path.joinpath(job_id)
 		download_folder.mkdir(exist_ok=True)
 		with ydl:
-			audio, target_file_path = get_track(
+			audio, target_file_path, artwork_file_path = get_track(
 				ydl,
 				url,
 				download_folder.joinpath(file_name),
@@ -40,15 +40,16 @@ def job_worker(**kwargs):
 			)
 			audio.save()
 
-			Logger.log(f'Audio "{target_file_path.name}" saved to "{Path.cwd().joinpath(target_file_path.parent).as_posix()}"', log_type='DEBUG', print_only=Args.dev)
+			Logger.log(f'Audio "{target_file_path.name}" saved to "{Path.cwd().joinpath(target_file_path.parent).as_posix()}"', log_type='DEBUG')
 			JobManager.update(
 				job_id,
 				'completed',
 				fileName=target_file_path.name,
 				downloadUrl=data.get('host_url', '/') + target_file_path.relative_to(Args.output_path).as_posix(),
+				artworkUrl=data.get('host_url', '/') + artwork_file_path.relative_to(Args.output_path).as_posix()
 			)
 	except Exception as e:
 		JobManager.update(job_id, 'failed', error=str(e))
-		Logger.log(f'Audio failed to save. Error: "{e}"', log_type='ERROR', print_only=Args.dev)
+		Logger.log(traceback.format_exc(), log_type='ERROR')
 	finally:
 		download_queue.task_done()

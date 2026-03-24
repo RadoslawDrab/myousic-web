@@ -10,7 +10,7 @@ from utils.logger import Logger
 class JobManager(Singleton):
 	def __init__(self):
 		super().__init__()
-		self._db_path = Args.db_path.joinpath('db.json')
+		self._db_path = Args.output_path.joinpath('db.json')
 		self._db = self._get_db()
 
 	@classmethod
@@ -31,24 +31,20 @@ class JobManager(Singleton):
 					filtered_data[id] = item
 					continue
 
-				path = Args.output_path.joinpath(id)
-				if path.exists():
-					for item in path.rglob('*'):
-						item.unlink() if item.is_file() else item.rmdir()
-					path.rmdir()
+				self._delete_folder(id)
 				changed = True
 
 			if changed:
 				self._set_db(filtered_data)
-
 			return filtered_data
 
 	@classmethod
 	@Singleton.exists
 	def _set_db(cls, data: dict | None = None):
 		self = cls._instance
+		_data = data if data is not None else self._db
 		with open(self._db_path, 'w', encoding='utf-8') as f:
-			f.write(json.dumps(data if data is not None else self._db))
+			f.write(json.dumps(_data))
 
 	@classmethod
 	@Singleton.exists
@@ -75,6 +71,24 @@ class JobManager(Singleton):
 
 		self._set_db()
 
+	@classmethod
+	@Singleton.exists
+	def delete(cls, job_id: str):
+		self = cls._instance
+		if job_id not in self._db:
+			raise Status(404, f'Job f{job_id} not found')
+		self._db.pop(job_id)
+		self._delete_folder(job_id)
+		self._set_db()
+		Logger.log(f"Job {job_id} deleted", log_type='DEBUG')
+	@classmethod
+	@Singleton.exists
+	def _delete_folder(cls, job_id: str):
+		path = Args.output_path.joinpath(job_id)
+		if path.exists():
+			for item in path.rglob('*'):
+				item.unlink() if item.is_file() else item.rmdir()
+			path.rmdir()
 	@classmethod
 	@Singleton.exists
 	def get(cls, job_id: str | None = None):
