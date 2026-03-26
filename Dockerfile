@@ -29,10 +29,6 @@ RUN pip install --no-cache-dir -r server/requirements.txt
 COPY server/ ./server/
 COPY --from=build-frontend /frontend/dist/ ./client
 
-# Permissions
-RUN touch /var/log/myousic.log && \
-    chmod 666 /var/log/myousic.log
-
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD python3 -c "import urllib.request; urllib.request.urlopen('http://localhost:80/').read()" || exit 1
 
@@ -42,6 +38,6 @@ CMD python server/main.py \
  --prod \
  --port 80 \
  --host 0.0.0.0 \
- --log-path /var/log/myousic.log \
+ --log-path /app/log/myousic.log \
  --app-path /app/client \
  --output-path /app/audio

@@ -1,12 +1,14 @@
 import useData from '@/composables/use-data'
 import useFetch from '@/composables/use-fetch'
+import useStatus from '@/composables/use-status'
 import { TRACK_KEYS } from '@/utils/api'
 import { download } from '@/utils'
 import { pascalCase } from '@/utils/string'
 import Mustache from 'mustache'
 
 const useApi = () => {
-    const { isLoading, status, get, post } = useFetch()
+    const status = useStatus()
+    const { isLoading, get, post } = useFetch()
     const { local } = useData()
 
     async function searchApi(options: SearchAPI_Options): Promise<{ resultCount: number, results: (SearchAPI_TrackResult & SearchAPI_ArtistResult & SearchAPI_AlbumResult)[] }> {
@@ -53,13 +55,13 @@ const useApi = () => {
         if (options?.artworkFile) formData.append('artworkFile', options.artworkFile)
 
 
-        const { fileName, downloadUrl } = await post<{ fileName: string, downloadUrl: string }>(formData, {
-            baseUrl: import.meta.env.VITE_API_URL,
-            path: [],
+        const response = await post<{ job_id: string, code: number, message: string, timestamp: number }>(formData, {
+            baseUrl: import.meta.env.CLIENT_API_URL,
+            path: ['queue'],
             query: query
         })
 
-        download(fileName, downloadUrl)
+        status.add({ type: 'success', title: response.message })
     }
     function renderComment(url: string, track: SearchAPI_TrackResult | Partial<ExtendedTrack>, options?: ExtraOptions, renderError: boolean = false): string {
         const _track = { ...track, ...(options || {})}
@@ -92,13 +94,18 @@ const useApi = () => {
             lyrics: string
             lyricsUrl: string
         }>(null, {
-            path: [track.artistName, track.trackName],
+            path: ['track-data', track.artistName, track.trackName],
             query: local.value ? {
                 lyrics: local.value.lyricsProviders,
                 lyricsModifier: Object.entries(local.value.lyricsModifier).map(([key, value]) => `${key}:${value}`),
                 excludedGenres: local.value.excludedGenres,
                 includedGenres: local.value.includedGenres
             } : {}
+        })
+    }
+    async function getQueueStatus() {
+        return await get<QueueItem[]>(null, {
+            path: ['queue']
         })
     }
 
@@ -108,6 +115,7 @@ const useApi = () => {
         searchApi,
         downloadTrack,
         getTrackData,
+        getQueueStatus,
         renderComment
     }
 }

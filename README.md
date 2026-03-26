@@ -30,6 +30,8 @@ Covers:
 
 ## 💾 Installation
 
+All environment variables are shown in [`.env.example`](https://github.com/RadoslawDrab/myousic-web/blob/master/.env.example)
+
 ### 1. 🐳 Docker
 
 ```bash

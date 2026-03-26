@@ -1,5 +1,6 @@
 import re
 import urllib.request
+import urllib.error
 from datetime import datetime
 from pathlib import Path
 import io
@@ -7,10 +8,10 @@ from pathvalidate import sanitize_filename
 
 from PIL import Image
 import music_tag
-from werkzeug.datastructures import FileStorage
 from yt_dlp import YoutubeDL
 
 from utils import Status
+from utils.args import Args
 
 
 def get_track(
@@ -18,13 +19,12 @@ def get_track(
 	url: str,
 	file_path: Path,
 	track: dict,
-	artwork_size: int = 1000,
-	artwork_file: FileStorage | None = None
+	artwork_size: int = 1000
 ):
 	ydl.extract_info(url, download=True)
 
 	if not file_path.exists():
-		raise Status('File not found', 404)
+		raise FileNotFoundError(f'File "{file_path}" not found')
 
 
 	target_file_path = file_path.parent.joinpath(sanitize_filename(f'{track.get('artistName', 'NONE')} - {track.get('trackName', 'NONE')}') + file_path.suffix)
@@ -37,14 +37,9 @@ def get_track(
 	audio = music_tag.load_file(target_file_path)
 
 
-	if artwork_file:
-		artwork_file_path = target_file_path.parent.joinpath(f'{target_file_path.stem}.jpeg')
-		artwork_file.save(artwork_file_path)
-		get_artwork(artwork_file, artwork_file_path)
-	else:
-		artwork_url = re.sub(r'\d+x\d+b', f'{artwork_size}x{artwork_size}b', track.get('artworkUrl100', ''))
-		artwork_file_path = target_file_path.parent.joinpath(f'{target_file_path.stem}.jpeg')
-		get_artwork(artwork_url, artwork_file_path)
+	artwork_file_path = target_file_path.parent.joinpath(f'{target_file_path.stem}.jpeg')
+	artwork_url = re.sub(r'\d+x\d+b', f'{artwork_size}x{artwork_size}b', track.get('artworkUrl100', ''))
+	get_artwork(artwork_url, artwork_file_path)
 
 	mapped = {
 		'title': 'trackName',
@@ -72,17 +67,24 @@ def get_track(
 	if release_date:
 		audio['year'] = datetime.fromisoformat(release_date).year
 
-	return audio, target_file_path
+	return audio, target_file_path, artwork_file_path
 
 
-def get_artwork(url_or_file: str | FileStorage, file_path: Path):
-	if isinstance(url_or_file, str):
-		with urllib.request.urlopen(url_or_file) as url_img:
-			# Load the image into memory first
-			img_data = url_img.read()
-	elif isinstance(url_or_file, FileStorage):
-		url_or_file.seek(0)
-		img_data = url_or_file.stream.read()
+def get_artwork(url: str, file_path: Path):
+	if not url.startswith(('http://', 'https://')):
+		try:
+			path = Args.output_path.joinpath(re.sub(r'^/+', '', url))
+			with open(path, 'rb') as f:
+				img_data = f.read()
+		except Exception as e:
+			raise Status(f"Can't read artwork: {e}", 500)
+	else:
+		try:
+			with urllib.request.urlopen(url) as url_img:
+				# Load the image into memory first
+				img_data = url_img.read()
+		except urllib.error.URLError as e:
+			raise Status(f"Can't download artwork: {e}", 500)
 
 	img = Image.open(io.BytesIO(img_data))
 

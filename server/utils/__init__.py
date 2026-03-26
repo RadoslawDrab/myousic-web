@@ -11,6 +11,8 @@ class Status(Exception):
 		self.code = code
 		self.timestamp = datetime.now().timestamp() * 1000
 		self.kwargs = kwargs
+	def __str__(self):
+		return f'[{self.code}] {self.message}'
 
 ENV_T = TypeVar('ENV_T')
 

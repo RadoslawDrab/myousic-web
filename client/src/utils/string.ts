@@ -1,5 +1,5 @@
 export function formatTitle(title: string) {
-    return title ? `${title} | ${import.meta.env.VITE_APP_NAME || 'APP'}` : import.meta.env.VITE_APP_NAME || 'APP'
+    return title ? `${title} | ${import.meta.env.CLIENT_APP_NAME || 'APP'}` : import.meta.env.CLIENT_APP_NAME || 'APP'
 }
 
 export function pascalCase(text: string | string[]) {

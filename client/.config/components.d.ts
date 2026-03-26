@@ -18,6 +18,7 @@ declare module 'vue' {
     DocsNav: typeof import('./../src/components/DocsNav.vue')['default']
     ExplicitnessIcon: typeof import('./../src/components/ExplicitnessIcon.vue')['default']
     Flex: typeof import('./../src/components/utils/Flex.vue')['default']
+    Footer: typeof import('./../src/components/Footer.vue')['default']
     Header: typeof import('./../src/components/Header.vue')['default']
     HeadersCheckbox: typeof import('./../src/components/utils/HeadersCheckbox.vue')['default']
     HeadersFilter: typeof import('./../src/components/utils/HeadersFilter.vue')['default']

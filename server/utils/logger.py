@@ -5,7 +5,7 @@ from datetime import datetime
 from utils.classes import Singleton
 
 
-LOG_TYPES = ['INFO', 'DEBUG', 'WARNING', 'ERROR']
+LOG_TYPES = ['DEBUG', 'INFO', 'WARNING', 'ERROR']
 
 class LoggerFormat:
 	"""A configuration class to define the format of log messages."""
@@ -34,6 +34,7 @@ class Logger(Singleton):
 	            title: str = 'LOG FILE',
 	            header_wrappers: str = '###',
 	            print_only: bool = False,
+	            min_log_level: str = 'DEBUG',
 	            logger_format: LoggerFormat = LoggerFormat.default
         ):
 		"""
@@ -60,6 +61,7 @@ class Logger(Singleton):
 		self._path.parent.mkdir(exist_ok=True)
 		self._title = title
 		self._print_only = print_only
+		self._min_log_index = log_types.index(min_log_level.upper())
 		self._header_wrappers = (header_wrappers or '###').strip()
 		self._logger_format = logger_format
 
@@ -116,7 +118,7 @@ class Logger(Singleton):
 
 	@classmethod
 	@Singleton.exists
-	def log(cls, *messages: any, log_type: str | None = None, sep: str = ' ', end: str = '', print_message: bool = True, print_only: bool | None = None, check_messages: bool = False) -> None:
+	def log(cls, *messages: any, log_type: str | None = None, sep: str = ' ', end: str = '', print_message: bool | None = None, print_only: bool | None = None, check_messages: bool = False) -> None:
 		"""
 		The main logging method. Writes a message to the console and/or log file.
 
@@ -190,7 +192,7 @@ class Logger(Singleton):
 		content.append(end)
 		_content = ' '.join(content)
 		# Print to console if required.
-		if print_message:
+		if print_message or self._min_log_index <= self.log_types.index(log_type):
 			print(_content)
 		# Write to file if not in print-only mode.
 		if print_only or self._print_only:

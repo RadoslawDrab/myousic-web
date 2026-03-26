@@ -61,7 +61,7 @@ graph TD
     
     subgraph ServerSide [Server Side]
        Download --> SA --> SB --> SC --> SD --> SE --> SF
-       SBG[(Clean up files every 12h)]
+       SBG[(Clean up files once per week)]
        
     
     end

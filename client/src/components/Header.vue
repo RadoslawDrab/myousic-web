@@ -1,16 +1,15 @@
 <script setup lang="ts">
-  import useCache from '@/composables/use-cache'
+  import useSocials from '@/composables/use-socials'
   import { joinClass } from '@/utils/string'
 
   const route = useRoute()
   const router = useRouter()
-  const cache = useCache(computed(() => '/data/social.json'))
 
   const breadcrumbs = computed<string[]>(() => {
     return route.matched.filter(v => v.meta.title || v.name).map(v => (v.meta.title || v.name) as string)
   })
 
-  const socials = ref<Social[]>([])
+  const socials = useSocials()
 
   const links = computed<{ icon: string, path: string, title: string, class?: string[], active?: boolean }[]>(() =>
       router.getRoutes()
@@ -28,34 +27,28 @@
             })
   )
 
-  watch(cache.data, (data) => {
-    try {
-      socials.value = JSON.parse(data)
-    } catch (e) {
-      console.error(e)
-    }
-  })
-
 </script>
 
 <template>
-  <Flex class="mb-3 border-b flex-wrap" :gap="2" align="center" justify="space-between">
-    <Flex class="flex-wrap align-start align-sm-center" :gap="2">
-      <v-btn
-          v-for="link in links"
-          :class="joinClass('text-none', ...link.class)"
-          :to="link.path"
-          :prepend-icon="link.icon"
-          variant="plain"
-          active-color="primary"
-          :active="link.active"
-          flat
-      >
-        {{ link.title }}
-      </v-btn>
-    </Flex>
+  <Flex class="mb-3 py-2 border-b flex-column flex-sm-row" :justify="['center', 'sm-start']" align="center" wrap>
+    <v-btn class="bg-white rounded-lg" density="comfortable" to="/" icon>
+      <v-img src="/icons/logo.svg" height="30" width="30"></v-img>
+    </v-btn>
+    <v-btn
+        v-for="link in links"
+        :class="joinClass('text-none', ...link.class)"
+        :to="link.path"
+        :prepend-icon="link.icon"
+        variant="plain"
+        active-color="primary"
+        :active="link.active"
+        density="comfortable"
+        flat
+    >
+      {{ link.title }}
+    </v-btn>
+    <div class="d-none d-md-block flex-grow-1"></div>
     <Flex align="center">
-      <v-breadcrumbs class="border-e" :items="breadcrumbs"></v-breadcrumbs>
       <v-btn
           v-for="social in socials"
           :icon="social.icon"
