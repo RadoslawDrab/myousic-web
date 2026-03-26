@@ -17,9 +17,9 @@ export function getTime(time: number, milliseconds: boolean = false) {
  * @returns Returns true if version is different than saved one
  */
 export function checkVersion(): boolean {
-    const name = `${import.meta.env.VITE_APP_NAME || 'APP'}_VERSION`
+    const name = `${import.meta.env.CLIENT_APP_NAME || 'APP'}_VERSION`
     const savedVersion = localStorage.getItem(name)
-    const version = import.meta.env.VITE_VERSION
+    const version = import.meta.env.CLIENT_VERSION
     if (savedVersion !== version) {
         localStorage.setItem(name, version)
         return true

@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import useSocials from '@/composables/use-socials'
 
-  const VERSION = computed(() => import.meta.env.VITE_VERSION)
+  const VERSION = computed(() => import.meta.env.CLIENT_VERSION)
   const socials = useSocials()
 </script>
 

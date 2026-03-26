@@ -6,9 +6,9 @@ interface ImportMetaEnv {
     readonly MODE: 'development' | 'production'
     readonly PROD: boolean
     readonly SSR: boolean
-    readonly VITE_API_URL: string
-    readonly VITE_APP_NAME: string
-    readonly VITE_VERSION: string
+    readonly CLIENT_API_URL: string
+    readonly CLIENT_APP_NAME: string
+    readonly CLIENT_VERSION: string
 }
 
 interface ImportMeta {

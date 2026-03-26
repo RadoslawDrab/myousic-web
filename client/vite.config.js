@@ -10,6 +10,7 @@ import VueRouter from 'unplugin-vue-router/vite'
 export default defineConfig(({ mode }) => {
     const DEV = mode === 'development'
     return {
+        envPrefix: 'CLIENT_',
         envDir: DEV ? '../' : './',
         preview: {
             port: 4000,

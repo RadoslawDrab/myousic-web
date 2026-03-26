@@ -1,5 +1,5 @@
 const useCache = (urlRef: Ref<string | null>, options?: { name?: string, init?: RequestInit, staleWhileRevalidate?: boolean }) => {
-    const cacheName = (import.meta.env.VITE_APP_NAME || 'APP').toUpperCase().trim().replace(/\s/g, '_') + '_' + (options?.name || 'CACHE').toUpperCase().trim().replace(/\s/g, '_')
+    const cacheName = (import.meta.env.CLIENT_APP_NAME || 'APP').toUpperCase().trim().replace(/\s/g, '_') + '_' + (options?.name || 'CACHE').toUpperCase().trim().replace(/\s/g, '_')
     const data = ref<string | null>(null)
     const isLoading = ref(false)
     const error = ref<any>(null)

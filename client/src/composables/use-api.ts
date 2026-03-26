@@ -56,7 +56,7 @@ const useApi = () => {
 
 
         const response = await post<{ job_id: string, code: number, message: string, timestamp: number }>(formData, {
-            baseUrl: import.meta.env.VITE_API_URL,
+            baseUrl: import.meta.env.CLIENT_API_URL,
             path: ['queue'],
             query: query
         })

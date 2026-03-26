@@ -1,9 +1,8 @@
 import { useStorage } from '@vueuse/core'
-import { nullColor } from 'vuetify/components/VColorPicker/util'
 
 const useData = () => {
 	const session = useStorage<SessionData>(
-        (import.meta.env.VITE_APP_NAME || 'APP').toUpperCase() + '_DATA',
+        (import.meta.env.CLIENT_APP_NAME || 'APP').toUpperCase() + '_DATA',
         {
             items: [],
             entity: 'song',
@@ -19,7 +18,7 @@ const useData = () => {
     )
 
     const local = useStorage<LocalData>(
-        (import.meta.env.VITE_APP_NAME || 'APP').toUpperCase() + '_SETTINGS',
+        (import.meta.env.CLIENT_APP_NAME || 'APP').toUpperCase() + '_SETTINGS',
         {
             lyricsProviders: ['AzLyrics', 'Genius', 'LyricsOvh', 'Lyrist'],
             artworkSize: 500,
