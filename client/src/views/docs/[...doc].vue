@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { checkVersion } from '@/utils'
 import * as uuid from 'uuid'
 
 import useCache from '@/composables/use-cache'
@@ -84,6 +85,7 @@ async function getDocumentsData() {
 onMounted(async () => {
   if (docs.value.length) return
   await getDocumentsData()
+  checkVersion() && await cache.refresh()
 })
 
 definePage({
