@@ -5,6 +5,7 @@ from flask import abort, request, send_from_directory
 from werkzeug.security import safe_join
 
 from tasks.job_manager import JobManager
+from utils.logger import Logger
 from . import api
 from utils import Status
 from utils.args import Args
@@ -58,4 +59,7 @@ def queue():
 def download(path: str):
 	if not safe_join(str(Args.output_path), path):
 		abort(404)
+
+	Logger.log(f'Downloading "{path}" from "{Args.output_path}"', log_type='DEBUG')
+
 	return send_from_directory(Args.output_path, path, as_attachment=True)
