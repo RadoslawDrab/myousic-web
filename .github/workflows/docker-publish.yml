@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*.*.*' # Triggers only when you push a tag like v0.2.2
+  workflow_dispatch:
 
 jobs:
   build:
@@ -31,7 +32,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
-            CLIENT_VERSION=${{ secrets.CLIENT_VERSION }}
+            CLIENT_VERSION=${{ github.ref_name }}
             SERVER_LOG_LEVEL=${{ secrets.SERVER_LOG_LEVEL }}
             SERVER_AUDIO_AVAILABLE=${{ secrets.SERVER_AUDIO_AVAILABLE }}
           tags: |
