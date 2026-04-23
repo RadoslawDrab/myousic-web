@@ -23,8 +23,7 @@ const useApi = () => {
                 query[key] = value
             })
 
-            const term = query['term'] || ''
-            query['term'] = encodeURIComponent(term.replace(/\s+/g, '+'))
+            query['term'] = (query['term'] || '').replace(/[^A-Za-z0-9 \-_.*]+/g, '').replace(/\s+/g, '+')
 
             return await get(null, { query, baseUrl: 'https://itunes.apple.com/search' })
         } catch (e) {
