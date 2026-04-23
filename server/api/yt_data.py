@@ -26,7 +26,7 @@ def yt_data():
 			title = info.get('title') or info.get('fulltitle')
 			artist = info.get('artist') or info.get('uploader')
 
-			extracted_title = re.sub(r'\(official.+video\)', '', title, flags=re.IGNORECASE)
+			extracted_title = re.sub(r'[(\[](official|music).+video[])]', '', title, flags=re.IGNORECASE)
 			extracted_title = re.sub(f'{artist.lower()} *- *', '', extracted_title, flags=re.IGNORECASE)
 			extracted_title = extracted_title.strip()
 

@@ -12,16 +12,24 @@ const useApi = () => {
     const { local } = useData()
 
     async function searchApi(options: SearchAPI_Options): Promise<{ resultCount: number, results: (SearchAPI_TrackResult & SearchAPI_ArtistResult & SearchAPI_AlbumResult)[] }> {
-        const query = {}
+        try {
+            const query = {}
 
-        query['media'] = 'music'
-        query['country'] = options.country || 'US'
+            query['media'] = 'music'
+            query['country'] = options.country || 'US'
 
-        Object.entries(options).forEach(([key, value]) => {
-            if (query[key]) return
-            query[key] = value
-        })
-        return await get(null, { query, baseUrl: 'https://itunes.apple.com/search' })
+            Object.entries(options).forEach(([key, value]) => {
+                if (query[key]) return
+                query[key] = value
+            })
+
+            const term = query['term'] || ''
+            query['term'] = encodeURIComponent(term.replace(/\s+/g, '+'))
+
+            return await get(null, { query, baseUrl: 'https://itunes.apple.com/search' })
+        } catch (e) {
+            status.add({ type: 'error', title: e.toString() })
+        }
     }
 
     type ExtraOptions = {
@@ -88,20 +96,26 @@ const useApi = () => {
     }
 
     async function getTrackData(track: SearchAPI_TrackResult | ExtendedTrack) {
-        return await get<{
-            genres: string[]
-            genresUrl: string
-            lyrics: string
-            lyricsUrl: string
-        }>(null, {
-            path: ['track-data', track.artistName, track.trackName],
-            query: local.value ? {
-                lyrics: local.value.lyricsProviders,
-                lyricsModifier: Object.entries(local.value.lyricsModifier).map(([key, value]) => `${key}:${value}`),
-                excludedGenres: local.value.excludedGenres,
-                includedGenres: local.value.includedGenres
-            } : {}
-        })
+        return {
+            genres: [],
+            genresUrl: '',
+            lyrics: '',
+            lyricsUrl: '',
+            ...await get<{
+                genres: string[]
+                genresUrl: string
+                lyrics: string
+                lyricsUrl: string
+            }>(null, {
+                path: ['track-data', track.artistName, track.trackName],
+                query: local.value ? {
+                    lyrics: local.value.lyricsProviders,
+                    lyricsModifier: Object.entries(local.value.lyricsModifier).map(([key, value]) => `${ key }:${ value }`),
+                    excludedGenres: local.value.excludedGenres,
+                    includedGenres: local.value.includedGenres
+                } : {}
+            })
+        }
     }
     async function getQueueStatus() {
         return await get<QueueItem[]>(null, {

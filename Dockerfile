@@ -5,6 +5,14 @@ WORKDIR /frontend
 COPY client/package*.json ./
 RUN npm install --legacy-peer-deps
 COPY client/ ./
+
+ARG CLIENT_VERSION
+
+ENV DEV=False
+ENV CLIENT_APP_NAME=Myousic
+ENV CLIENT_VERSION=$CLIENT_VERSION
+ENV CLIENT_API_URL=/api
+
 COPY .env* ./
 RUN npm run build
 
@@ -15,11 +23,19 @@ WORKDIR /app
 COPY --from=ffmpeg-source /ffmpeg /usr/local/bin/
 COPY --from=ffmpeg-source /ffprobe /usr/local/bin/
 
+ARG DEV
+ARG SERVER_LOG_LEVEL
+ARG SERVER_AUDIO_AVAILABLE
+
 # Environment
 ENV PYTHONUNBUFFERED=1
 ENV	PYTHONDONTWRITEBYTECODE=1
 ENV	LANG=C.UTF-8
 ENV	LC_ALL=C.UTF-8
+
+ENV DEV=False
+ENV SERVER_LOG_LEVEL=$SERVER_LOG_LEVEL
+ENV SERVER_AUDIO_AVAILABLE=$SERVER_AUDIO_AVAILABLE
 
 # Python Requirements
 COPY server/requirements.txt ./server/requirements.txt
