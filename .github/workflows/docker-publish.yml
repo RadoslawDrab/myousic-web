@@ -41,5 +41,5 @@ jobs:
             SERVER_AUDIO_AVAILABLE=${{ secrets.SERVER_AUDIO_AVAILABLE }}
             SERVER_ITUNES_URL=${{ secrets.SERVER_ITUNES_URL }}
           tags: |
-            ${{ startsWith(github.ref, 'refs/tags/') && format('radziogadzio/myousic:{0}', github.ref_name) || format('radziogadzio/myousic:{0}-dev', github.ref_name) }}
-            ${{ github.ref_name == 'master' && 'radziogadzio/myousic:latest' || '' }}
+            radziogadzio/myousic:${{ github.ref_name }}
+            radziogadzio/myousic:latest
