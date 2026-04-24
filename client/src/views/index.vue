@@ -48,14 +48,21 @@ async function onDownload(item: SearchAPI_Result) {
   await downloadTrack(session.value.url, _item)
 }
 
-watch([() => session.value.search, () => session.value.entity], async ([search, entity]) => {
-  if (!search) {
+async function search(value?: string) {
+  const { results } = await searchApi({
+    term: value || session.value.search,
+    entity: session.value.entity
+  })
+  items.value = results
+}
+
+watch([() => session.value.search, () => session.value.entity], async ([searchTerm, entity]) => {
+  if (!searchTerm) {
     items.value = []
     return
   }
 
-  const { results } = await searchApi({ term: search, entity: entity as SearchAPI_Entity })
-  items.value = results
+  await search()
 })
 
 watch(() => session.value.entity, (entity) => {
@@ -116,7 +123,7 @@ definePage({
 
 <template>
   <UrlDataSearch class="mb-3 flex-grow-1" />
-  <SearchBar>
+  <SearchBar @search="search">
     <HeadersFilter ref="headerFilter" v-model="headers" v-model:all-headers="allHeaders"  />
   </SearchBar>
   <v-divider class="my-4" />
