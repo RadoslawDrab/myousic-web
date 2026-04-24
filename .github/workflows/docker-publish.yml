@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - 'v*.*.*' # Triggers only when you push a tag like v0.2.2
-    branches:
-      - master
   workflow_dispatch:
     inputs:
       manual_tag:
