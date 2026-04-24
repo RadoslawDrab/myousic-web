@@ -14,6 +14,7 @@ declare module 'vue' {
     ArtworkImage: typeof import('./../src/components/ArtworkImage.vue')['default']
     Clipping: typeof import('./../src/components/Clipping.vue')['default']
     ClippingButtons: typeof import('./../src/components/ClippingButtons.vue')['default']
+    DataTableNavigation: typeof import('./../src/components/utils/DataTableNavigation.vue')['default']
     DocsBody: typeof import('./../src/components/DocsBody.vue')['default']
     DocsNav: typeof import('./../src/components/DocsNav.vue')['default']
     ExplicitnessIcon: typeof import('./../src/components/ExplicitnessIcon.vue')['default']

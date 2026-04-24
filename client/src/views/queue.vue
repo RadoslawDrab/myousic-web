@@ -2,8 +2,10 @@
   import useApi from '@/composables/use-api'
   import useFetch from '@/composables/use-fetch'
   import useStatus from '@/composables/use-status'
-  import { getTime } from '@/utils'
+  import { download, getTime } from '@/utils'
   import { useRouteQuery } from '@vueuse/router'
+
+  import DataTableNavigation from '@/components/utils/DataTableNavigation.vue'
 
   const { getQueueStatus, downloadTrack } = useApi()
   const status = useStatus()
@@ -11,9 +13,17 @@
   const { delete: _deleteJob } = useFetch({ path: ['queue']})
 
   const items = ref<QueueItem[]>([])
+  const selectedItemIds = ref<string[]>([])
   const currentItem = ref<QueueItem | null>(null)
   const search = ref<string>('')
   const isLoading = ref<boolean>(false)
+  const pageData = reactive<{
+    page: number
+    itemsPerPage: number
+  }>({
+    page: 0,
+    itemsPerPage: 10
+  })
 
   const allHeaders = ref<DataTableHeader[]>([
     { key: 'data.artworkUrl', title: 'Artwork' },
@@ -52,10 +62,18 @@
     })
   })
 
-  async function deleteJob(id: string) {
+  const selectedItems = computed<QueueItem[]>(() =>
+      items.value.filter(item => selectedItemIds.value.some((id) => item.id === id))
+  )
+
+  async function deleteJob(item: QueueItem | QueueItem[]) {
+    if (Array.isArray(item)) {
+      item.forEach(item => deleteJob(item))
+      return
+    }
     isLoading.value = true
     try {
-      await _deleteJob(null, { query: { id }})
+      await _deleteJob(null, { baseUrl: import.meta.env.CLIENT_API_URL, query: { id: item.id }})
       await refresh()
       status.add({ type: 'success', title: 'Job deleted', closable: true })
     } catch (e) {
@@ -74,6 +92,22 @@
       isLoading.value = false
     }
   }
+  function restart(item: QueueItem | QueueItem[]) {
+    if (Array.isArray(item)) {
+      item.forEach(item => restart(item))
+      return
+    }
+    downloadTrack(item.data.url, item.data.track).then(() => refresh())
+  }
+
+  function downloadItem(item: QueueItem | QueueItem[]) {
+    if (Array.isArray(item)) {
+      item.forEach(item => downloadItem(item))
+      return
+    }
+
+    download(item.data.downloadUrl)
+  }
 
   onMounted(refresh)
 
@@ -89,7 +123,15 @@
 </script>
 
 <template>
-  <v-data-table :headers="headers" :items="filteredItems" :loading="isLoading">
+  <v-data-table
+      v-model="selectedItemIds"
+      v-model:page="pageData.page"
+      :headers="headers"
+      :items="filteredItems"
+      :loading="isLoading"
+      :items-per-page="pageData.itemsPerPage"
+      show-select
+  >
     <template #top>
       <v-toolbar class="border-b px-2" color="transparent">
         <v-text-field v-model="search" class="me-2" placeholder="String or RegEx" clearable>
@@ -107,10 +149,10 @@
     <template #item.actions="{ item }">
       <v-btn-group density="comfortable">
         <v-btn icon="mdi-download" variant="flat" :href="item.data.downloadUrl" :disabled="!item.data.downloadUrl && item.finished" v-tooltip="'Download'"></v-btn>
-        <v-btn icon="mdi-restart" @click="downloadTrack(item.data.url, item.data.track).then(() =>refresh())" v-tooltip="'Restart'"></v-btn>
+        <v-btn icon="mdi-restart" @click="restart(item)" v-tooltip="'Restart'"></v-btn>
         <v-btn icon="mdi-link" variant="flat" :href="item.data.url" :disabled="!item.data.url" target="_blank" v-tooltip="'View URL'"></v-btn>
         <v-btn icon="mdi-code-json" @click="currentItem = item" v-tooltip="'View JSON'"></v-btn>
-        <v-btn icon="mdi-close" @click="deleteJob(item.id)" v-tooltip="'Delete job'"></v-btn>
+        <v-btn icon="mdi-close" @click="deleteJob(item)" v-tooltip="'Delete job'"></v-btn>
       </v-btn-group>
     </template>
     <template #item.data.artworkUrl="{ value }">
@@ -138,6 +180,17 @@
     </template>
     <template #item.data.error="{ value }">
       <code v-if="value" class="text-red-darken-2">{{ value }}</code>
+    </template>
+    <template #bottom>
+      <v-divider />
+      <Flex class="w-100 mx-2" justify="space-between" align="center">
+        <v-btn-group density="comfortable">
+          <v-btn icon="mdi-download" :disabled="selectedItems.length == 0" @click="downloadItem(selectedItems)" v-tooltip="'Download'"></v-btn>
+          <v-btn icon="mdi-restart" :disabled="selectedItems.length == 0" @click="restart(selectedItems)" v-tooltip="'Restart'"></v-btn>
+          <v-btn icon="mdi-delete" :disabled="selectedItems.length == 0" @click="deleteJob(selectedItems)" v-tooltip="'Delete'"></v-btn>
+        </v-btn-group>
+        <DataTableNavigation v-model:page="pageData.page" v-model:items-per-page="pageData.itemsPerPage" :items="items" />
+      </Flex>
     </template>
   </v-data-table>
   <v-dialog v-model="currentItem" max-width="800">
