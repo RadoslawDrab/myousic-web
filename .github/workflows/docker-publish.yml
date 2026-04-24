@@ -4,8 +4,14 @@ on:
   push:
     tags:
       - 'v*.*.*' # Triggers only when you push a tag like v0.2.2
+    branches:
+      - master
   workflow_dispatch:
-
+    inputs:
+      manual_tag:
+        description: 'Tag name (e.g., v0.2.2)'
+        required: true
+        default: 'manual-build'
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,7 +38,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
-            CLIENT_VERSION=${{ github.ref_name }}
+            CLIENT_VERSION=${{ github.event.inputs.manual_tag ||github.ref_name }}
             SERVER_LOG_LEVEL=${{ secrets.SERVER_LOG_LEVEL }}
             SERVER_AUDIO_AVAILABLE=${{ secrets.SERVER_AUDIO_AVAILABLE }}
           tags: |
