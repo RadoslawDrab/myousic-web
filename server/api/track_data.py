@@ -1,14 +1,46 @@
 import re
 
+import requests
 from flask import request
 
 from . import api
 from utils.args import Args
-from utils import get_args
+from utils import Status, get_args, get_env
 from utils.logger import Logger
 from utils.track_data import Genre
 from providers import find_lyrics_provider
 
+ITUNES_URL = get_env('SERVER_ITUNES_URL', default='https://itunes.apple.com/search')
+
+@api.route("/track-data", methods=["GET"])
+def get_tracks():
+
+	term = request.args.get('term')
+	entity = request.args.get('entity')
+	country = request.args.get('country', 'US')
+	explicit = request.args.get('explicit')
+	limit = request.args.get('limit', 200)
+
+	if not term:
+		raise Status('No term provided', 400)
+
+	params = {
+		"term": term,
+		"country": country,
+		"limit": limit,
+		"lang": "en_us"
+	}
+	if entity: params['entity'] = entity
+	if explicit: params['explicit'] = 'Yes' if explicit == 'true' else 'No'
+
+	try:
+		response = requests.get(ITUNES_URL, params=params, timeout=10)
+		response.raise_for_status()
+
+		return response.json()
+	except requests.exceptions.RequestException as e:
+		Logger.log(f'Error fetching tracks: {str(e)}', log_type='ERROR')
+		raise Status(str(e), 500)
 
 @api.route("/track-data/<string:artist>/<string:title>", methods=["GET"])
 def track_data(artist: str, title: str):
@@ -41,4 +73,4 @@ def track_data(artist: str, title: str):
 
 	Logger.log(f'Genres {'' if genres else 'not '}retrieved [{artist} - {title}]', log_type='DEBUG', print_only=Args.dev)
 
-	return { 'lyrics':  lyrics, 'lyricsUrl': lyrics_url, 'genres': [*genres], 'genresUrl': genres_url }
+	return { 'lyrics':  lyrics, 'lyricsUrl': lyrics_url, 'genres': [*(genres or [])], 'genresUrl': genres_url }

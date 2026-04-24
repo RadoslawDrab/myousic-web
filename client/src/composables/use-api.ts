@@ -15,18 +15,14 @@ const useApi = () => {
         try {
             const query = {}
 
-            query['media'] = 'music'
-            query['country'] = options.country || 'US'
-
             Object.entries(options).forEach(([key, value]) => {
                 if (query[key]) return
                 query[key] = value
             })
 
-            const term = query['term'] || ''
-            query['term'] = encodeURIComponent(term.replace(/\s+/g, '+'))
+            query['term'] = (query['term'] || '').trim()
 
-            return await get(null, { query, baseUrl: 'https://itunes.apple.com/search' })
+            return await get(null, { path: ['track-data'], query })
         } catch (e) {
             status.add({ type: 'error', title: e.toString() })
         }
@@ -107,6 +103,7 @@ const useApi = () => {
                 lyrics: string
                 lyricsUrl: string
             }>(null, {
+                baseUrl: import.meta.env.CLIENT_API_URL,
                 path: ['track-data', track.artistName, track.trackName],
                 query: local.value ? {
                     lyrics: local.value.lyricsProviders,
@@ -119,6 +116,7 @@ const useApi = () => {
     }
     async function getQueueStatus() {
         return await get<QueueItem[]>(null, {
+            baseUrl: import.meta.env.CLIENT_API_URL,
             path: ['queue']
         })
     }

@@ -1,10 +1,15 @@
 
-export function download(fileName: string, blobOrUrl: string | Blob) {
-    const link = document.createElement('a')
-    link.href = typeof blobOrUrl === 'string' ? blobOrUrl : URL.createObjectURL(blobOrUrl)
-    link.download = fileName
-    link.click()
-    URL.revokeObjectURL(link.href)
+export function download(blobOrUrl: string | Blob) {
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = typeof blobOrUrl === 'string' ? blobOrUrl : URL.createObjectURL(blobOrUrl);
+
+    document.body.appendChild(iframe);
+
+    setTimeout(() => {
+        document.body.removeChild(iframe);
+        if (typeof blobOrUrl !== 'string') URL.revokeObjectURL(iframe.src);
+    }, 1000);
 }
 
 export function getTime(time: number, milliseconds: boolean = false) {
