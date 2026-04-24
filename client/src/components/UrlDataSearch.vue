@@ -19,6 +19,7 @@
     session.value.result = null
     await nextTick()
     const response = await get<API_SearchUrlResult>(null, {
+      baseUrl: import.meta.env.CLIENT_API_URL,
       path: ['yt-data'],
       query: {
         url: session.value.url
