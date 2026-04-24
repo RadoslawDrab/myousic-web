@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - 'v*.*.*' # Triggers only when you push a tag like v0.2.2
-    branches:
-      - master
   workflow_dispatch:
     inputs:
       manual_tag:
@@ -38,9 +36,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           build-args: |
-            CLIENT_VERSION=${{ github.event.inputs.manual_tag ||github.ref_name }}
+            CLIENT_VERSION=${{ github.event.inputs.manual_tag || github.ref_name }}
             SERVER_LOG_LEVEL=${{ secrets.SERVER_LOG_LEVEL }}
             SERVER_AUDIO_AVAILABLE=${{ secrets.SERVER_AUDIO_AVAILABLE }}
           tags: |
-            radziogadzio/myousic:${{ github.ref_name }}
-            radziogadzio/myousic:latest
+            ${{ startsWith(github.ref, 'refs/tags/') && format('radziogadzio/myousic:{0}', github.ref_name) || format('radziogadzio/myousic:{0}-dev', github.ref_name) }}
+            ${{ github.ref_name == 'master' && 'radziogadzio/myousic:latest' || '' }}
