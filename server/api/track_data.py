@@ -58,7 +58,7 @@ def track_data(artist: str, title: str):
 	included_genres = get_args(request, 'includedGenres')
 
 	lyrics_provider = find_lyrics_provider(request.args.get('lyrics', 'AzLyrics').split(','), artist, title, lyrics_modifier)
-	lyrics, lyrics_url = lyrics_provider.get(artist, title) if lyrics_modifier else (None, None)
+	lyrics, lyrics_url = lyrics_provider.get(artist, title) if lyrics_provider else (None, None)
 
 	Logger.log(f'Lyrics {'' if lyrics else 'not '}retrieved [{artist} - {title}]', log_type='DEBUG', print_only=Args.dev)
 
@@ -69,7 +69,7 @@ def track_data(artist: str, title: str):
 		modifiers=genres_modifier
 	)
 
-	genres, genres_url = genres_provider.get(artist, title) if genres_modifier else (None, None)
+	genres, genres_url = genres_provider.get(artist, title) if genres_provider else (None, None)
 
 	Logger.log(f'Genres {'' if genres else 'not '}retrieved [{artist} - {title}]', log_type='DEBUG', print_only=Args.dev)
 
